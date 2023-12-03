@@ -1,4 +1,5 @@
-﻿/*const inversion = [10000];
+﻿//const rendimientoTipo = obtener el rendimiento desde la BD
+const inversion = [10000];
 var labels = ['Año 1'];
 
 var options = {
@@ -6,10 +7,10 @@ var options = {
         name: 'Tú inversión',
         data: []
     },
-        {
-            name: 'Más rendimiento',
-            data: []
-        }],
+    {
+        name: 'Más rendimiento',
+        data: []
+    }],
     chart: {
         type: 'bar',
         width: "100%",
@@ -110,7 +111,3 @@ function actualizarGrafica() {
         chart.update();
     }
 }
-
-*/
-
-
