@@ -1,6 +1,4 @@
-﻿//const rendimientoTipo = obtener el rendimiento desde la BD
-const inversion = [10000];
-var labels = ['Año 1'];
+﻿var labels = ['Año 1'];
 
 var options = {
     series: [{
