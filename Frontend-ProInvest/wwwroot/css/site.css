@@ -5,11 +5,10 @@ html {
 
 html {
   position: relative;
-  min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
 }
 
 /* Estilos del formulario */
@@ -81,4 +80,44 @@ form {
   html {
     font-size: 16px;
   }
+}
+
+*{
+    margin: 0;
+    padding: 0;
+}
+
+
+.lado-izquierdo {
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-image: url('/images/ahorro.jpg');
+    height: 90vh;
+    min-height: 500px;
+    border-radius: 3% 0 0 3%;
+}
+.contenedor-grid {
+    display: grid;
+    grid-template-columns: auto 45%;
+    border: solid 2px;
+    border-color: gray;
+    border-radius: 2%;
+    height: calc();
+    min-height: 500px;
+}
+
+.lado-derecho {
+    display: grid;
+    place-content: center stretch;
+}
+
+@media (max-width: 768px) {
+    .lado-izquierdo {
+        display: none;
+    }
+
+    .lado-derecho {
+        margin-top: 50px;
+        grid-column: 1 / span 2;
+    }
 }
