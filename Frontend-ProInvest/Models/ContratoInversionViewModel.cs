@@ -1,4 +1,6 @@
-﻿namespace Frontend_ProInvest.Models
+﻿using System.Security.Cryptography.X509Certificates;
+
+namespace Frontend_ProInvest.Models
 {
     public class ContratoInversionViewModel
     {
@@ -18,5 +20,11 @@
 
         public InversionistaViewModel Inversionista { get; set; }
         public TipoInversionViewModel TipoInversion {  get; set; }
+
+        public ContratoInversionViewModel()
+        {
+            Inversionista = new InversionistaViewModel();
+            TipoInversion = new TipoInversionViewModel();
+        }
     }
 }
