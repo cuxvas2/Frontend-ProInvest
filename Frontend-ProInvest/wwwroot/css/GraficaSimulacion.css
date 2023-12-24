@@ -1,25 +1,9 @@
-﻿.card {
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
+﻿
 
 .card-header {
     background-color: lightgray;
-    color: black;
-    font-size: 24px;
-    text-align: center;
 }
 
-.card-body {
-    padding: 20px;
-}
-
-.form-label {
-    font-size: 18px;
-}
-
-.form-control, .form-select {
-    font-size: 16px;
-}
 
 .slider {
     width: 100%;
@@ -27,9 +11,6 @@
 
 .card-footer {
     background-color: lightgray;
-    color: white;
-    text-align: center;
-    font-size: 18px;
 }
 
 /* Estilos del gráfico */
@@ -47,111 +28,7 @@
     height: 60px;
 }
 
-.row {
-    display: flex;
-    align-items: center;
-}
-
-#btnInvertir {
-    width: max-content;
-}
-
-@media (min-width: 768px) {
-    html {
-        font-size: 16px;
-    }
-}
-
-* {
-    margin: 0;
-    padding: 0;
-}
 
 
-.lado-izquierdo {
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-image: url('/images/ahorro.jpg');
-    height: 90vh;
-    min-height: 500px;
-    border-radius: 3% 0 0 3%;
-}
 
-.contenedor-grid {
-    display: grid;
-    grid-template-columns: auto 50%;
-    border-radius: 2%;
-    height: calc();
-    min-height: 500px;
-}
 
-.lado-derecho {
-    display: grid;
-    place-content: center stretch;
-    border-radius: 0 3% 3% 0;
-    background: #ebf17f;
-}
-
-#formulario-simulacion {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-}
-
-.formulario-inversion {
-    margin-top: 20px;
-}
-
-@media (max-width: 768px) {
-    .lado-izquierdo {
-        display: none;
-    }
-
-    .lado-derecho {
-        margin-top: 50px;
-        grid-column: 1 / span 2;
-        border-radius: 3% 3% 3% 3%;
-        font-size: small;
-    }
-}
-
-@media only screen and (max-width: 600px) {
-    .form-flex {
-        flex-wrap: wrap;
-    }
-
-    .form-row {
-        flex-wrap: wrap;
-        max-width: max-content;
-    }
-
-    .form-group {
-        width: 40%;
-    }
-}
-
-.form-flex {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    margin: 0 3% 0 3%;
-}
-
-.form-row {
-    display: flex;
-    justify-content: center;
-}
-
-.form-group {
-    margin: 1% 0 0 0;
-}
-
-    .form-group:first-child {
-        margin: 1% 3% 0 0;
-    }
-
-#btnSiguienteP1 {
-    margin: 7% 0 0 0;
-    background: #458441;
-    border-color: #458441;
-}
