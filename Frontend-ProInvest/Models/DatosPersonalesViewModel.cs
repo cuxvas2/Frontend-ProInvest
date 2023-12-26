@@ -45,7 +45,7 @@ namespace Frontend_ProInvest.Models
         public string GradoAcademico {  get; set; }
 
         [StringLength(10)]
-        [RegularExpression(@"^[0-9]+$", ErrorMessage = "Ingresa solo números")]
+        [RegularExpression(@"^[0-9]{10}", ErrorMessage = "Ingresa tu numero de celular a 10 dígitos")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         [Display(Name = "Teléfono Celular*")]
         public string TelefonoCelular { get; set; }
