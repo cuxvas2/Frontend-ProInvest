@@ -15,5 +15,21 @@ namespace Frontend_ProInvest.Controllers
             ViewBag.NivelesEstudio = Enum.GetValues(typeof(DatosPersonalesViewModel.NivelEstudios));
             return View();
         }
+
+        [HttpPost]
+        public IActionResult DatosPersonales(DatosPersonalesViewModel personal, 
+            string BtnPrevious, string BtnNext)
+        {
+            if(BtnNext != null)
+            {
+                return View("VerificacionDatosContacto");
+            }
+            return View();
+        }
+
+        //public IActionResult VerificacionDatosContacto()
+        //{
+        //    return View("VerificacionDatosContacto");
+        //}
     }
 }

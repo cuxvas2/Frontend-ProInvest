@@ -6,7 +6,7 @@ namespace Frontend_ProInvest.Models
     public class DatosPersonalesViewModel
     {
         public int IdInversionista { get; set; }
-        [RegularExpression(@"/^[a-zA-ZÀ-ÖØ-öø-ÿ0-9&]+$/u", ErrorMessage = "Ingresa una empresa válida sin caracteres especiales.")]
+        [RegularExpression(@"^[a-zA-ZÀ-ÖØ-öø-ÿ0-9&]+$", ErrorMessage = "Ingresa una empresa válida sin caracteres especiales.")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         [Display(Name = "Empresa*")]
         public string EmpresaTrabajo { get; set; }

@@ -6,8 +6,6 @@
 <head>
     <link rel="stylesheet" href="~/css/Formulario.css" asp-append-version="true" />
 </head>
-@* <h1>Una inversión segura</h1>
-<hr /> *@
 <div class="row justify-content-md-center">
     <div class="col-md-4 form-img" alt="Monedas creciendo plantas"></div>
     <div class="col-md-4" style="background:white;">
@@ -77,7 +75,8 @@
                 <span asp-validation-for="TelefonoCelular" class="text-danger"></span>
             </div>
             <div class="text-center mt-3">
-                <input type="submit" value="Siguiente" class="btn btn-primary" />
+                <input type="submit" name="BtnNext" value="Siguiente" class="btn btn-primary" />
+                <input type="submit" name="BtnPrevious" value="Anterior" class="btn btn-primary" style="display:none;"/>
             </div>
         </form>
     </div>

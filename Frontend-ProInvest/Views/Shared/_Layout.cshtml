@@ -6,8 +6,9 @@
     <title>@ViewData["Title"] - Frontend_ProInvest</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Frontend_ProInvest.styles.css" asp-append-version="true"/>
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    @* <link rel="stylesheet" href="~/Frontend_ProInvest.styles.css" asp-append-version="true"/> *@
+    <link rel="stylesheet" href="content/Frontend_ProInvest.styles.css" asp-append-version="true" />
+    @* <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script> *@
 </head>
 <body>
     <header>
@@ -25,9 +26,6 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="FormularioInversion">FormularioInversion</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Formulario" asp-action="DatosPersonales">Invertir ahora</a>
@@ -51,6 +49,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
