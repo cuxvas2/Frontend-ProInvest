@@ -1,13 +1,15 @@
-﻿.form-img {
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-image: url('/images/ahorro.jpg');
-    height: 100%;
-    min-height: 850px;
-}
-
-@media only screen and (max-width: 767px) {
+﻿@media only screen and (max-width: 767.90px) {
     .form-img {
         display: none;
     }
 }
+
+.form-img {
+    height: 100%; 
+    object-fit: cover;"
+}
+
+.col-form-img {
+    overflow: hidden;
+}
+

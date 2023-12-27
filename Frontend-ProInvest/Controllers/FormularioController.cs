@@ -27,9 +27,14 @@ namespace Frontend_ProInvest.Controllers
             return View();
         }
 
-        //public IActionResult VerificacionDatosContacto()
-        //{
-        //    return View("VerificacionDatosContacto");
-        //}
+        [HttpPost]
+        public IActionResult VerificacionDatosContacto(string BtnPrevious, string BtnNext)
+        {
+            if(BtnNext != null)
+            {
+                return View("Direccion");
+            }
+            return View();
+        }
     }
 }
