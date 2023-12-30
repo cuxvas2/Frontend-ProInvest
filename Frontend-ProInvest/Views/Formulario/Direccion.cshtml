@@ -15,32 +15,6 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <p class="text-sm-center">Los elementos marcados con un asterísco (*) son obligatorios</p>
             <div class="form-group">
-                <label asp-for="Estado" class="control-label"></label>
-                <select asp-for="Estado" class="form-select">
-                    <option value="">Seleccione un valor para este campo</option>
-                </select>
-                <span asp-validation-for="Estado" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Municipio" class="control-label"></label>
-                <select asp-for="Municipio" class="form-select">
-                    <option value="">Seleccione un valor para este campo</option>
-                </select>
-                <span asp-validation-for="Municipio" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Colonia" class="control-label"></label>
-                <select asp-for="Colonia" class="form-select">
-                    <option value="">Seleccione un valor para este campo</option>
-                </select>
-                <span asp-validation-for="Colonia" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CodigoPostal" class="control-label"></label>
-                <input asp-for="CodigoPostal" class="form-control" />
-                <span asp-validation-for="CodigoPostal" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="Calle" class="control-label"></label>
                 <input asp-for="Calle" class="form-control" />
                 <span asp-validation-for="Calle" class="text-danger"></span>
@@ -55,6 +29,32 @@
                 <input asp-for="NumeroInterior" class="form-control" />
                 <span asp-validation-for="NumeroInterior" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                <label asp-for="CodigoPostal" class="control-label"></label>
+                <input asp-for="CodigoPostal" class="form-control" id="codigoInput"/>
+                <span asp-validation-for="CodigoPostal" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Colonia" class="control-label"></label>
+                <select asp-for="Colonia" class="form-select" id="coloniaSelect">
+                    <option value="">Seleccione un valor para este campo</option>
+                </select>
+                <span asp-validation-for="Colonia" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Estado" class="control-label"></label>
+                <select asp-for="Estado" class="form-select" id="estadoSelect">
+                    <option value="">Seleccione un valor para este campo</option>
+                </select>
+                <span asp-validation-for="Estado" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Municipio" class="control-label"></label>
+                <select asp-for="Municipio" class="form-select" id="municipioSelect">
+                    <option value="">Seleccione un valor para este campo</option>
+                </select>
+                <span asp-validation-for="Municipio" class="text-danger"></span>
+            </div>            
             <div class="text-center mt-3">
                 <input type="submit" name="BtnNext" value="Siguiente" class="btn btn-primary" />
                 <input type="submit" name="BtnPrevious" value="Anterior" class="btn btn-primary" style="display:none;" />
@@ -68,5 +68,8 @@
 
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script defer src="~/js/direcciones.js"></script>
 }

@@ -12,7 +12,7 @@ namespace Frontend_ProInvest.Models
         public string EmpresaTrabajo { get; set; }
 
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
-        [RegularExpression(@"^(?!^\s*$)[a-zA-ZáéíóúüñÁÉÍÓÚÜÑ\s]+$", ErrorMessage = "Ingresa una profesión válida sin caracteres especiales.")]
+        [RegularExpression(@"^(?!^\s*$)[a-zA-ZáéíóúüñÁÉÍÓÚÜÑ\s]+$", ErrorMessage = "Ingresa una profesión válida incluyendo solo letras.")]
         [Display(Name = "Profesión*")]
         public string Profesion {  get; set; }
 
@@ -36,7 +36,7 @@ namespace Frontend_ProInvest.Models
         public DateTime FechaNacimiento { get; set; }
 
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
-        [RegularExpression(@"^(?!.*[&<>']).{12}$", ErrorMessage = "El RFC debe incluir 12 caracteres.")]
+        [RegularExpression(@"^(?!.*[&<>']).{12}$", ErrorMessage = "El RFC debe incluir 12 caracteres sin incluir caracteres especiales.")]
         [Display(Name = "RFC*")]
         public string Rfc {  get; set; }
 
