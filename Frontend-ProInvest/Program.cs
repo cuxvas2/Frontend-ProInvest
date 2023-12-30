@@ -1,7 +1,13 @@
+using Frontend_ProInvest.Services.Backend;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+//Soporte para consultar el API
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<IUsuarios, Usuarios>();
 
 var app = builder.Build();
 
