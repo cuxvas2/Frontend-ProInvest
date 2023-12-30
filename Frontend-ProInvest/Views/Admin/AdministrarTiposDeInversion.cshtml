@@ -1,0 +1,41 @@
+﻿@model IEnumerable<Frontend_ProInvest.Models.TipoInversionViewModel>
+
+@{
+    ViewData["Title"] = "AdministrarTiposDeInversion";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Gestionar tipos de inversión</h1>
+
+<p>
+    <a asp-action="CrearTipoInversion">Agregar</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Rendimiento)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Rendimiento)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id=item.IdTipo }) |
+                @Html.ActionLink("Delete", "Delete", new { id=item.IdTipo })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
