@@ -1,0 +1,15 @@
+﻿@media only screen and (max-width: 767.90px) {
+    .form-img {
+        display: none;
+    }
+}
+
+.form-img {
+    height: 100%; 
+    object-fit: cover;"
+}
+
+.col-form-img {
+    overflow: hidden;
+}
+

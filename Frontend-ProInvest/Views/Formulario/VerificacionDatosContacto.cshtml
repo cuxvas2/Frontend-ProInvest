@@ -1,0 +1,32 @@
+﻿@{
+    ViewData["Title"] = "Verificacion Datos de Contacto";
+}
+
+<div class="row justify-content-md-center " style="height: 80vh;">
+    <div class="col-md-6">
+        <form asp-action="VerificacionDatosContacto">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <h3 class="text-center">Confirmación de correo electrónico y teléfono celular</h3>
+            <p class="text-center">Es necesario confirmar tu cuenta para seguir con tu registro. Se te ha enviado un correo electrónico con una liga para verificarlo, así como un código al número de teléfono proporcionado.</p>
+            <h6 class="text-center">Ingrese el código que se envió a tu teléfono celular para continuar con el registro</h6>
+            <div class="col-md-4 mx-auto">
+                <input class="form-control" />
+            </div>
+            <div class="text-center mt-3">
+                <input type="submit" name="BtnNext" value="Confirmar" class="btn btn-primary" />
+                <input type="submit" name="BtnPrevious" value="Anterior" class="btn btn-primary" style="display:none;" />
+            </div>
+        </form>
+        <div class="row text-center mt-3">
+            <div class="col-md-6">
+                <p><small>¿No recibiste el código?</small></p>
+                <input type="submit" name="BtnSendCode" value="Enviar código" class="btn btn-link btn-sm" />
+            </div>
+            <div class="col-md-6">
+                <p><small>¿No ves el correo electrónico?</small></p>
+                <input type="submit" name="BtnSendEmail" value="Enviar correo" class="btn btn-link btn-sm" />
+            </div>
+        </div>
+        
+    </div>
+</div>
