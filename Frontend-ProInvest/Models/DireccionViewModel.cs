@@ -22,7 +22,7 @@ namespace Frontend_ProInvest.Models
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         [Display(Name = "Colonia*")]
         public string Colonia { get; set; }
-        [RegularExpression(@"^[a-zA-ZÀ-ÖØ-öø-ÿ\s]+$", ErrorMessage = "Ingresa un estado válido (solo letras y números).")]
+        [RegularExpression(@"^[a-zA-ZÀ-ÖØ-öø-ÿ\s]+$", ErrorMessage = "Ingresa un estado válido (solo letras).")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         [Display(Name = "Estado*")]
         public string Estado { get; set; }

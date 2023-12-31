@@ -1,0 +1,108 @@
+﻿@model Frontend_ProInvest.Models.InformacionBancariaViewModel
+
+@{
+    ViewData["Title"] = "InformacionBancaria";
+}
+<head>
+    <link rel="stylesheet" href="~/css/Formulario.css" asp-append-version="true" />
+</head>
+
+<div class="row justify-content-md-center">
+    <div class="col-md-4 col-form-img">
+        <img src="/images/infoBancaria.jpg" alt="Casa, monedas y billetes" class="img-fluid form-img">
+    </div>
+    <div class="col-md-4">
+        <h2 class="text-lg-center">Una inversión segura</h2>
+        <h4 class="text-lg-center">Información bancaria</h4>
+        <h6 class="text-md-center">Inicia tu vida como inversionista con nosotros</h6>
+        <form asp-action="InformacionBancaria">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <p class="text-sm-center">Los elementos marcados con un asterísco (*) son obligatorios</p>
+            <div class="form-group">
+                <label asp-for="OrigenDeFondos" class="control-label"></label>
+                <select asp-for="OrigenDeFondos" class="form-select">
+                    <option value="">Seleccione un valor para este campo</option>
+                </select>
+                <span asp-validation-for="OrigenDeFondos" class="text-danger"></span>
+            </div>
+            <div class="form-check">
+                <small><label asp-for="OrigenLicito" class="form-check-label">Acepto el <a href="#" class="text-decoration-none">Origen de fondos</a></label></small>
+                @Html.CheckBoxFor(m => m.OrigenLicito, new{
+                    @class="form-check-input"
+                })
+                <br />
+                @Html.ValidationMessageFor(m => m.OrigenLicito, "", new{
+                    @class="text-danger"
+                })
+                <span asp-validation-for="OrigenLicito" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Cuenta" class="control-label"></label>
+                <input asp-for="Cuenta" class="form-control" />
+                <span asp-validation-for="Cuenta" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ClabeInterbancaria" class="control-label"></label>
+                <input asp-for="ClabeInterbancaria" class="form-control" />
+                <span asp-validation-for="ClabeInterbancaria" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Banco" class="control-label"></label>
+                <select asp-for="Banco" class="form-select">
+                    <option value="">Seleccione un valor para este campo</option>
+                </select>
+                <span asp-validation-for="Banco" class="text-danger"></span>
+            </div>
+             <div class="form-group">
+                <label asp-for="CantidadAInvertir" class="control-label"></label>
+                <input asp-for="CantidadAInvertir" class="form-control" />
+                <span asp-validation-for="CantidadAInvertir" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Anios" class="control-label"></label>
+                <input asp-for="Anios" class="form-control" />
+                <span asp-validation-for="Anios" class="text-danger"></span>
+            </div>  
+            <div class="form-group">
+                <label asp-for="TipoDeInversion" class="control-label"></label>
+                <select asp-for="TipoDeInversion" class="form-select">
+                    <option value="">Seleccione un valor para este campo</option>
+                </select>
+                <span asp-validation-for="TipoDeInversion" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Firma Digital*</label>
+                <p><small>Esta firma se usará para firmar el <a href="#" class="text-decoration-none">Contrato de Inversión</a></small></p>
+                <div class="text-center">
+                    <canvas class="firma-pad"></canvas>
+                </div>
+                <p class="text-center">
+                    <small>
+                        <a href="#" class="boton-limpiar text-decoration-none">Limpiar</a>
+                    </small>
+                </p>
+            </div>
+            <div class="form-check">
+                @Html.LabelFor(m => m.AceptaContrato, new{
+                    @class="form-check-label",
+                })
+                @Html.CheckBoxFor(m => m.AceptaContrato, new{
+                    @class="form-check-input"
+                })
+                @Html.ValidationMessageFor(m => m.AceptaContrato, "",new{
+                    @class="text-danger",
+                })
+            </div>
+            <div class="text-center mt-3">
+                <input type="submit" name="BtnNext" value="Siguiente" class="btn btn-primary" />
+                <input type="submit" name="BtnPrevious" value="Anterior" class="btn btn-primary" style="display:none;" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script defer src="~/js/firma.js"></script>
+}

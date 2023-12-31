@@ -57,6 +57,51 @@ namespace Frontend_ProInvest.Controllers
         }
 
         [HttpPost]
+        public ActionResult Direccion(DireccionViewModel direccion, string BtnPrevious, string BtnNext)
+        {
+            if(BtnNext!= null)
+            {
+                if(ModelState.IsValid)
+                {
+                    return RedirectToAction("InformacionBancaria");
+                }
+            }
+            return View();
+        }
+        public async Task<ActionResult> InformacionBancaria()
+        {
+            return View("InformacionBancaria");  
+        }
+
+        [HttpPost]
+        public ActionResult InformacionBancaria(InformacionBancariaViewModel modelo, string BtnPrevious, string BtnNext)
+        {
+            if(BtnNext!= null)
+            {
+                if(ModelState.IsValid)
+                {
+                    if(modelo.OrigenLicito == false)
+                    {
+                        ModelState.AddModelError("OrigenLicito", "Debe aceptar el Acuerdo de Origen de Fondos para continuar.");
+                    }
+                    if(modelo.AceptaContrato == false)
+                    {
+                        ModelState.AddModelError("AceptaContrato", "Debe aceptar el Contrato de inversión para continuar.");
+                    }
+                }
+                if(!ModelState.IsValid)
+                {
+                    return View(modelo);
+                }
+                else
+                {
+                    return RedirectToAction("Direccion");
+                }
+            }
+            return View();
+        }
+
+        [HttpPost]
         public async Task<JsonResult> HandleCodigoPostalChange(string codigoPostal)
         {
             try
