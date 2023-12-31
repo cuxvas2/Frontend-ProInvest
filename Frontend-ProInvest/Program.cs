@@ -8,6 +8,7 @@ builder.Services.AddControllersWithViews();
 //Soporte para consultar el API
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<IUsuarios, Usuarios>();
+builder.Services.AddScoped<IAdministrador, Administrador>();
 
 var app = builder.Build();
 
@@ -29,5 +30,9 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapControllerRoute(
+    name: "Admin",
+    pattern: "admin",
+    defaults: new { controller = "InicioSesion", action = "Index" });
 
 app.Run();

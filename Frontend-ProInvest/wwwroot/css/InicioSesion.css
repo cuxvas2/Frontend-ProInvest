@@ -1,0 +1,43 @@
+﻿body {
+    font-family: 'Open Sans', sans-serif;
+}
+
+
+
+.contenedor-grid {
+    display: grid;
+    grid-template-columns: auto 45%;
+}
+
+.lado-izquierdo {
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-image: url('../images/inicioSesion.jpg');
+    height: 100vh;
+    min-height: 500px;
+}
+
+.lado-derecho {
+    display: grid;
+    place-content: center stretch;
+}
+
+.lado-derecho .card {
+        max-width: 500px;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+
+@media (max-width: 768px) {
+    .lado-izquierdo {
+        display: none;
+    }
+
+    .lado-derecho {
+        margin-top: 50px;
+        grid-column: 1 / span 2;
+    }
+}
