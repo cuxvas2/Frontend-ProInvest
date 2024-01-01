@@ -17,17 +17,24 @@ namespace Frontend_ProInvest.Controllers
         }
         public IActionResult DatosPersonales()
         {
-            var viewModel = new DatosPersonalesViewModel();
-            ViewBag.NivelesEstudio = Enum.GetValues(typeof(DatosPersonalesViewModel.NivelEstudios));
+            var viewModel = new InversionistaViewModel();
+            ViewBag.NivelesEstudio = Enum.GetValues(typeof(InversionistaViewModel.NivelEstudios));
             return View();
         }
 
         [HttpPost]
-        public IActionResult DatosPersonales(DatosPersonalesViewModel personal, 
+        public IActionResult DatosPersonales(InversionistaViewModel personal, 
             string BtnPrevious, string BtnNext)
         {
-            if(BtnNext != null)
+            var ipConnectionRemote = HttpContext.Connection.RemoteIpAddress.ToString();
+            if (BtnNext != null)
             {
+                //hacer código Usuarios 
+                /**
+                 * Checar cómo está en el api
+                 * Checar que necesita
+                 * Recuperar y enviar lo necesario
+                 */
                 return RedirectToAction("VerificacionDatosContacto");
             }
             return View();

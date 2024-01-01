@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Frontend_ProInvest.Models
 {
-    public class DatosPersonalesViewModel
+    public class InversionistaViewModel
     {
         public int IdInversionista { get; set; }
         [RegularExpression(@"^[a-zA-ZÀ-ÖØ-öø-ÿ0-9&]+$", ErrorMessage = "Ingresa una empresa válida sin caracteres especiales.")]
@@ -54,7 +54,8 @@ namespace Frontend_ProInvest.Models
         [RegularExpression(@"^(?!^\s*$)[a-zA-ZáéíóúüñÁÉÍÓÚÜÑ\s]+$", ErrorMessage = "Ingresa un nombre válido sin caracteres especiales.")]
         [Display(Name = "Nombre*")]
         public string Nombre {  get; set; }
-
+        
+        public string DireccionIp {  get; set; }
         public enum NivelEstudios
         {
             Primaria,

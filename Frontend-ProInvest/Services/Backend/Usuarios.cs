@@ -69,5 +69,34 @@ namespace Frontend_ProInvest.Services.Backend
             }
             return colonias;
         }
+        public async Task AnadirInformacionPersonalInversionista (InversionistaViewModel datosPersonales)
+        {
+            InversionistaViewModel inversionistaRetornado;
+            string token;
+            StringContent jsonContent = new(JsonSerializer.Serialize(datosPersonales), Encoding.UTF8, "application/json");
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, $"{_configuration["UrlWebAPIInversionista"]}/anadirInformacionPersonalInversionista")
+            {
+                Content = jsonContent
+            };
+            var httpClient = _httpClientFactory.CreateClient();
+            try
+            {
+                var response = await httpClient.SendAsync(httpRequestMessage);
+                if (response.IsSuccessStatusCode)
+                {
+                    DireccionRespuestaJson respuesta = await response.Content.ReadFromJsonAsync<DireccionRespuestaJson>();
+                    foreach (var colonia in respuesta.Colonias)
+                    {
+                        colonias.Add(colonia);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                throw new Exception("No se pudieron recuperar las colonias");
+            }
+        }
     }
 }
