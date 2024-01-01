@@ -10,43 +10,57 @@ namespace Frontend_ProInvest.Controllers
 {
     public class InicioSesionController : Controller
     {
+        public string Mensaje { get; set; }
         private readonly IAdministrador _administrador;
         public InicioSesionController(IAdministrador administrador)
         {
             _administrador = administrador;
         }
         private String _vista = "~/Views/Admin/InicioSesion.cshtml";
-        public IActionResult Index(bool mostrarModalBienvenida = false)
+        public IActionResult Index()
         {
-            if (mostrarModalBienvenida)
+            var viewModel = new CredencialesAccesoViewModel
             {
-                ViewBag.MostrarModalBienvenida = true;
-            }
-            return View(_vista);
+                Mensaje = " "
+            };
+            return View(_vista, viewModel);
         }
         [HttpPost]
         public async Task<IActionResult> IniciarSesion(CredencialesAccesoViewModel credencialesAcceso)
         {
             if (!ModelState.IsValid)
             {
-                return View(_vista);
-            }
-
-            string usuario = credencialesAcceso.Usuario;
-            string contrasena = Encriptor(credencialesAcceso.Contrasena);
-            credencialesAcceso.Usuario = usuario;
-            credencialesAcceso.Contrasena = contrasena;
-            CredencialesRespuestaJson credencialesObtenidas = await _administrador.ObtenerCredencialesAccesoAsync(credencialesAcceso);
-
-            if (credencialesObtenidas.CodigoStatus == HttpStatusCode.OK)
-            {
-                return Json(new { mostrarModalBienvenida = true });
+                var viewModel = new CredencialesAccesoViewModel
+                {
+                    Mensaje = " "
+                };
+                return View(_vista, viewModel);
             }
             else
             {
-                ModelState.AddModelError("", "Inicio de sesión fallido. Verifica tus credenciales.");
-                return View(_vista);
+                string usuario = credencialesAcceso.Usuario;
+                string contrasena = Encriptor(credencialesAcceso.Contrasena);
+                credencialesAcceso.Usuario = usuario;
+                credencialesAcceso.Contrasena = contrasena;
+                CredencialesRespuestaJson credencialesObtenidas = await _administrador.ObtenerCredencialesAccesoAsync(credencialesAcceso);
+                if (credencialesObtenidas.CodigoStatus == HttpStatusCode.OK)
+                {
+                    var viewModel = new CredencialesAccesoViewModel
+                    {
+                        Mensaje = "Bienvenido"
+                    };
+                    return View(_vista, viewModel);
+                }
+                else
+                {
+                    var viewModel = new CredencialesAccesoViewModel
+                    {
+                        Mensaje = "Verifica tus credenciales de acceso de adminisrador"
+                    };
+                    return View(_vista, viewModel);
+                }
             }
+
         }
         public static string Encriptor(string password)
         {
@@ -58,7 +72,7 @@ namespace Frontend_ProInvest.Controllers
                 {
                     encriptedPassword.Append(bytes[i].ToString("x2"));
                 }
-                return encriptedPassword.ToString();
+                return encriptedPassword.ToString().ToUpper();
             }
         }
 

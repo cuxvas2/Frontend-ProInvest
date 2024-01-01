@@ -7,12 +7,4 @@ mostrarContrasena.addEventListener("click", function () {
         passwordInput.type = "password";
     }
 });
-document.addEventListener('DOMContentLoaded', (event) => {
-    const modalBienvenida = document.getElementById('modalBienvenida');
-    const mostrarModalBienvenida = modalBienvenida.dataset.mostrar;
 
-    if (mostrarModalBienvenida === 'true') {
-        const nuevoModal = new bootstrap.Modal(modalBienvenida);
-        nuevoModal.show();
-    }
-});

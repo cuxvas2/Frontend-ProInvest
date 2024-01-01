@@ -41,6 +41,7 @@ namespace Frontend_ProInvest.Services.Backend{
             {
                 credencialesObtenidas.Usuario = null;
                 credencialesObtenidas.CodigoStatus = System.Net.HttpStatusCode.InternalServerError;
+                return credencialesObtenidas;
             }
             return credencialesObtenidas;
         }   
