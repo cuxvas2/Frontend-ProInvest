@@ -64,7 +64,7 @@ namespace Frontend_ProInvest.Controllers
         }
 
         [HttpPost]
-        public ActionResult Direccion(DireccionViewModel direccion, string BtnPrevious, string BtnNext)
+        public ActionResult Direccion(InversionistaViewModel direccion, string BtnPrevious, string BtnNext)
         {
             if(BtnNext!= null)
             {

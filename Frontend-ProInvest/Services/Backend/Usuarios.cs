@@ -36,9 +36,9 @@ namespace Frontend_ProInvest.Services.Backend
             }
             return estados;
         } 
-        public async Task<List<DireccionViewModel>> GetColoniasPorCodigoPostalAsync(string direccionIp, string codigoPostal)
+        public async Task<List<InversionistaViewModel>> GetColoniasPorCodigoPostalAsync(string direccionIp, string codigoPostal)
         {
-            List<DireccionViewModel> colonias = new();            
+            List<InversionistaViewModel> colonias = new();            
             var requestData = new
             {
                 ip = direccionIp
@@ -54,7 +54,7 @@ namespace Frontend_ProInvest.Services.Backend
                 var response = await httpClient.SendAsync(httpRequestMessage);
                 if (response.IsSuccessStatusCode)
                 {
-                    DireccionRespuestaJson respuesta = await response.Content.ReadFromJsonAsync<DireccionRespuestaJson>();
+                    InversionistaRespuestaJson respuesta = await response.Content.ReadFromJsonAsync<InversionistaRespuestaJson>();
                     foreach(var colonia in respuesta.Colonias)
                     {
                         colonias.Add(colonia);
