@@ -84,11 +84,7 @@ namespace Frontend_ProInvest.Services.Backend
                 var response = await httpClient.SendAsync(httpRequestMessage);
                 if (response.IsSuccessStatusCode)
                 {
-                    DireccionRespuestaJson respuesta = await response.Content.ReadFromJsonAsync<DireccionRespuestaJson>();
-                    foreach (var colonia in respuesta.Colonias)
-                    {
-                        colonias.Add(colonia);
-                    }
+                    //algo
                 }
             }
             catch (Exception ex)
