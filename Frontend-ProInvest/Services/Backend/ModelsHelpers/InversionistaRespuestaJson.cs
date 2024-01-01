@@ -3,9 +3,9 @@ using Newtonsoft.Json;
 
 namespace Frontend_ProInvest.Services.Backend.ModelsHelpers
 {
-    public class DireccionRespuestaJson
+    public class InversionistaRespuestaJson
     {
-        public List<DireccionViewModel> Colonias { get; set; }
+        public List<InversionistaViewModel> Colonias { get; set; }
         public string Token { get; set; }
     }
 }

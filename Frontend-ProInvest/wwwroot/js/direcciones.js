@@ -14,20 +14,32 @@ codigoPostal.addEventListener("input", async function () {
                 type: 'POST',
                 data: { codigoPostal: codigoPostalIngresado }
             });
-            actualizarSelect(result.colonias);
-            actualizarSelectEstado(result.colonias);
-            actualizarSelectMunicipio(result.colonias);
+            if (result.error !== undefined) {
+                throw (error);
+            }
+            else {
+                actualizarSelect(result.colonias);
+                actualizarSelectEstado(result.colonias);
+                actualizarSelectMunicipio(result.colonias);
+            }
         } catch (error) {
             console.error('Error al manejar el cambio del código postal:', error);
-            var optionError = document.createElement('option');
-            option.value = "";
-            option.text = "Ocurrió un error al cargar";
-            municipioSelect.appendChild(optionError);
-            codigoPostalSelect.appendChild(optionError);
-            estadoSelect.appendChild(optionError);
+            actualizarSelectError("coloniaSelect");
+            actualizarSelectError("municipioSelect");
+            actualizarSelectError("estadoSelect");
         }
     }
 });
+
+function actualizarSelectError(idElemento) {
+    const elemento = document.getElementById(idElemento);
+    elemento.innerHTML = '';
+    var optionError = document.createElement('option');
+    optionError.value = "";
+    optionError.text = "Ocurrió un error al cargar";
+    elemento.appendChild(optionError);
+}
+
 function actualizarSelect(opciones) {
     codigoPostalSelect.innerHTML = '';
     opciones = Array.isArray(opciones) ? opciones : [opciones];
