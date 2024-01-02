@@ -53,7 +53,6 @@ namespace Frontend_ProInvest.Services.Backend
         public async Task<bool> AnadirTiposInversionAsync(string accessToken, TipoInversionViewModel inversion)
         {
             bool exitoso = false;
-            // Para enviar al usuario, lo convierto a JSON
             using StringContent jsonContent = new(
                 JsonSerializer.Serialize(new
                 {
@@ -63,7 +62,6 @@ namespace Frontend_ProInvest.Services.Backend
                 }),
                 Encoding.UTF8,
                 "application/json");
-            // Preparo la llamada con el JSON con los datos del login
             var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, $"{_configuration["UrlWebAPI"]}/admin/tiposInversion")
             {
                 Content = jsonContent,
@@ -74,13 +72,10 @@ namespace Frontend_ProInvest.Services.Backend
 
             try
             {
-                // Realizo la llamada al Web API
                 var response = await httpClient.SendAsync(httpRequestMessage);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    //Regresa un TipoInversion
-                    //token = await response.Content.ReadFromJsonAsync<AuthUser>();
                     exitoso = true;
                     var jsonResponse = await response.Content.ReadAsStringAsync();
                 }
