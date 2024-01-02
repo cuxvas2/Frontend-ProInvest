@@ -7,6 +7,12 @@
     <link rel="stylesheet" href="~/css/Formulario.css" asp-append-version="true" />
 </head>
 <div class="row justify-content-md-center">
+    @if(ViewBag.Error != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @ViewBag.Error
+        </div>
+    }
     <div class="col-md-4 col-form-img">
         <img src="/images/ahorro.jpg" alt="Monedas creciendo como plantas" class="img-fluid form-img">
     </div>

@@ -7,6 +7,7 @@ namespace Frontend_ProInvest.Controllers
     public class FormularioController : Controller
     {
         private readonly IUsuarios _usuarios;
+        private string Token {  get; set; }
         public FormularioController(IUsuarios usuarios)
         {
             _usuarios = usuarios;
@@ -15,28 +16,67 @@ namespace Frontend_ProInvest.Controllers
         {
             return View();
         }
-        public IActionResult DatosPersonales()
+        public async Task<IActionResult> DatosPersonales()
         {
-            var viewModel = new InversionistaViewModel();
+            try
+            {
+                var direccionIp = HttpContext.Connection.RemoteIpAddress.ToString();
+                var solicitudExistente = await _usuarios.ObtenerContratoInversionPorIpAsync(direccionIp);
+                Token = solicitudExistente.Token;
+                if(solicitudExistente?.InformacionContrato != null)
+                {
+                    string estado = solicitudExistente.InformacionContrato.Estado;
+                    switch (estado)
+                    {
+                        case "VERIFICACION":
+                            return RedirectToAction("VerificacionDatosContacto");
+                        case "DOMICILIO":
+                            return RedirectToAction("Direccion");
+                        case "FINANCIERO":
+                            return RedirectToAction("InformacionBancaria");
+                        case "EXPEDIENTE":
+                            break;
+                        case "FINALIZADO":
+                            break;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                ViewBag.Error = "No se pudo recuperar el proceso de su solicitud. Intente de nuevo más tarde";
+            }
             ViewBag.NivelesEstudio = Enum.GetValues(typeof(InversionistaViewModel.NivelEstudios));
             return View();
         }
 
         [HttpPost]
-        public IActionResult DatosPersonales(InversionistaViewModel personal, 
+        public async Task<IActionResult> DatosPersonalesAsync(InversionistaViewModel datosPersonales, 
             string BtnPrevious, string BtnNext)
         {
-            var ipConnectionRemote = HttpContext.Connection.RemoteIpAddress.ToString();
+            var direccionIp = HttpContext.Connection.RemoteIpAddress.ToString();
+            datosPersonales.DireccionIp = direccionIp;
             if (BtnNext != null)
             {
-                //hacer código Usuarios 
-                /**
-                 * Checar cómo está en el api
-                 * Checar que necesita
-                 * Recuperar y enviar lo necesario
-                 */
-                return RedirectToAction("VerificacionDatosContacto");
+                try
+                {
+                    var resultado = await _usuarios.AnadirInformacionPersonalInversionistaAsync(datosPersonales);
+                    var contrato = await _usuarios.CrearContratoInversionAsync(direccionIp, resultado.IdInversionista, DateTime.UtcNow);
+                    if (resultado?.Token != null && contrato)
+                    {
+                        Token = resultado.Token;
+                        return RedirectToAction("VerificacionDatosContacto");
+                    }
+                    else
+                    {
+                        ViewBag.Error = "Ocurrió un error al guarda la información, intente de nuevo";
+                    }
+                }
+                catch (Exception)
+                {
+                    ViewBag.Error = "Ocurrió un error al guarda la información, intente de nuevo";
+                }
             }
+            ViewBag.NivelesEstudio = Enum.GetValues(typeof(InversionistaViewModel.NivelEstudios));
             return View();
         }
 
