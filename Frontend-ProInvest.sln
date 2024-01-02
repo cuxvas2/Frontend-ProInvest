@@ -5,7 +5,7 @@ VisualStudioVersion = 17.7.34221.43
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Frontend-ProInvest", "Frontend-ProInvest\Frontend-ProInvest.csproj", "{2E2447BE-53B4-4386-A48E-85DB79B0A746}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Frontend-ProInvestTests", "Frontend-ProInvestTests\Frontend-ProInvestTests.csproj", "{D0EE11AE-52EA-4006-976B-2C51B6065303}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Frontend-ProInvestTests", "Frontend-ProInvestTests\Frontend-ProInvestTests.csproj", "{D0EE11AE-52EA-4006-976B-2C51B6065303}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
