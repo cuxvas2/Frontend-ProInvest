@@ -69,12 +69,65 @@ namespace Frontend_ProInvest.Services.Backend
             }
             return colonias;
         }
-        public async Task AnadirInformacionPersonalInversionista (InversionistaViewModel datosPersonales)
+        public async Task<InversionistaViewModel> AnadirInformacionPersonalInversionistaAsync (InversionistaViewModel datosPersonales)
         {
-            InversionistaViewModel inversionistaRetornado;
-            string token;
-            StringContent jsonContent = new(JsonSerializer.Serialize(datosPersonales), Encoding.UTF8, "application/json");
-            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, $"{_configuration["UrlWebAPIInversionista"]}/anadirInformacionPersonalInversionista")
+            InversionistaViewModel inversionistaRetornado = new();
+            var httpClient = _httpClientFactory.CreateClient();
+            try
+            {
+                HttpResponseMessage response = await httpClient.PostAsJsonAsync($"{_configuration["UrlWebAPIInversionista"]}/informacionPersonal", datosPersonales);
+                if (response.IsSuccessStatusCode)
+                {
+                    InversionistaRespuestaJson respuesta = await response.Content.ReadFromJsonAsync<InversionistaRespuestaJson>();
+                    inversionistaRetornado = respuesta.Inversionista;
+                    inversionistaRetornado.Token = respuesta.Token;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                throw new Exception("No se pudieron guardar los datos");
+            }
+            return inversionistaRetornado;
+        }
+        public async Task<bool> CrearContratoInversionAsync(string ip, int id, DateTime fechaActualizacion)
+        {
+            bool contratoCreado = false;
+            string fechaFormateada = fechaActualizacion.ToString("yyyy-MM-dd HH:mm:ss");
+
+            var requestData = new
+            {
+                direccionIp = ip,
+                idInversionista = id,
+                ultimaActualizacion = fechaFormateada
+            };
+            var httpClient = _httpClientFactory.CreateClient();
+            try
+            {
+                HttpResponseMessage response = await httpClient.PostAsJsonAsync($"{_configuration["UrlWebAPIInversionista"]}/contratosInversion", requestData);
+                if (response.IsSuccessStatusCode)
+                {
+                    contratoCreado = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                throw new Exception("No se pudo crear el contrato de inversión");
+            }
+            return contratoCreado;
+        }
+        public async Task<ContratoInversionRespuestaJson> ObtenerContratoInversionPorIpAsync (string ip)
+        {
+            ContratoInversionRespuestaJson respuesta = new();
+            var requestData = new
+            {
+                direccionIp = ip
+            };
+            StringContent jsonContent = new(JsonSerializer.Serialize(requestData), Encoding.UTF8, "application/json");
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, $"{_configuration["UrlWebAPIInversionista"]}/contratosInversion/obtenerIp")
             {
                 Content = jsonContent
             };
@@ -84,15 +137,16 @@ namespace Frontend_ProInvest.Services.Backend
                 var response = await httpClient.SendAsync(httpRequestMessage);
                 if (response.IsSuccessStatusCode)
                 {
-                    //algo
+                    respuesta = await response.Content.ReadFromJsonAsync<ContratoInversionRespuestaJson>();                    
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
-                throw new Exception("No se pudieron recuperar las colonias");
+                throw new Exception("No se pudo recuperar el contrato");
             }
+            return respuesta;
         }
     }
 }

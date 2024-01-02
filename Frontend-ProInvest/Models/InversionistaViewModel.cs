@@ -6,7 +6,7 @@ namespace Frontend_ProInvest.Models
     public class InversionistaViewModel
     {
         public int IdInversionista { get; set; }
-        [RegularExpression(@"^[a-zA-ZÀ-ÖØ-öø-ÿ0-9&]+$", ErrorMessage = "Ingresa una empresa válida sin caracteres especiales.")]
+        [RegularExpression(@"^[a-zA-ZÀ-ÖØ-öø-ÿ0-9&\s]+$", ErrorMessage = "Ingresa una empresa válida sin caracteres especiales.")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         [Display(Name = "Empresa*")]
         public string EmpresaTrabajo { get; set; }
@@ -63,10 +63,10 @@ namespace Frontend_ProInvest.Models
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         [Display(Name = "Calle*")]
         public string Calle { get; set; }
-        [RegularExpression(@"^[a-zA-ZÀ-ÖØ-öø-ÿ0-9]+$", ErrorMessage = "Ingresa un número exterior válido (solo letras y números sin espacios).")]
+        [RegularExpression(@"^[a-zA-ZÀ-ÖØ-öø-ÿ0-9]+$", ErrorMessage = "Ingresa un número exterior válido (solo letras y números, sin espacios).")]
         [Display(Name = "Número exterior")]
         public string NumeroExterior { get; set; }
-        [RegularExpression(@"^[a-zA-ZÀ-ÖØ-öø-ÿ0-9]+$", ErrorMessage = "Ingresa un número interior válido (solo letras y números sin espacios).")]
+        [RegularExpression(@"^[a-zA-ZÀ-ÖØ-öø-ÿ0-9]+$", ErrorMessage = "Ingresa un número interior válido (solo letras y números, sin espacios).")]
         [Display(Name = "Número interior")]
         public string NumeroInterior { get; set; }
         [RegularExpression(@"^[0-9]{5}", ErrorMessage = "Ingresa tu código postal a 5 dígitos")]
