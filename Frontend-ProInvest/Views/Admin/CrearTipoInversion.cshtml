@@ -4,45 +4,41 @@
     ViewData["Title"] = "CrearTipoInversion";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<div class="container-fluid text-center">
+    <h1>Crear Tipo de Inversion</h1>
 
-<h1>Crear Tipo de Inversion</h1>
+    <h4>Tipo de Inversion</h4>
+    <hr />
+    <div class="row justify-content-md-center">
+        <div class="col-md-10">
+            <form asp-action="CrearTipoInversion">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-<h4>Tipo de Inversion</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="CrearTipoInversion">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="IdTipo" class="control-label"></label>
-                <input asp-for="IdTipo" class="form-control" />
-                <span asp-validation-for="IdTipo" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Nombre" class="control-label"></label>
-                <input asp-for="Nombre" class="form-control" />
-                <span asp-validation-for="Nombre" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Descripcion" class="control-label"></label>
-                <input asp-for="Descripcion" class="form-control" />
-                <span asp-validation-for="Descripcion" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Rendimiento" class="control-label"></label>
-                <input asp-for="Rendimiento" class="form-control" />
-                <span asp-validation-for="Rendimiento" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+                <div class="form-group mb-4">
+                    <label asp-for="Nombre" class="control-label mb-1"></label>
+                    <input asp-for="Nombre" class="form-control" />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                </div>
+                <div class="form-group mb-4 flex-wrap">
+                    <label asp-for="Descripcion" class="control-label mb-1"></label>
+                    <input asp-for="Descripcion" class="form-control text-wrap" />
+                    <span asp-validation-for="Descripcion" class="text-danger"></span>
+                </div>
+                <div class="form-group mb-4">
+                    <label asp-for="Rendimiento" class="control-label mb-1"></label>
+                    <input asp-for="Rendimiento" class="form-control" />
+                    <span asp-validation-for="Rendimiento" class="text-danger"></span>
+                </div>
+                <div class="form-group mb-4">
+                    <a asp-action="AdministrarTiposDeInversion" class="btn btn-secondary">Regresar</a> |
+                    <input type="submit" value="Crear" class="btn btn-success" /> 
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="AdministrarTiposDeInversion">Regresar</a>
-</div>
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
