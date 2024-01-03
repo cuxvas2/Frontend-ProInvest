@@ -16,3 +16,14 @@ html {
 body {
     margin-bottom: 60px;
 }
+
+#logout-button {
+    font-size: 25px;
+}
+
+#iconoEliminarEditar{
+    font-size: 20px;
+}
+#iconoAgregar{
+    font-size: 50px;
+}
