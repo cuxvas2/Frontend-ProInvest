@@ -48,7 +48,7 @@
                 @{
                     string date = DateTime.Now.Year.ToString() + '-' + DateTime.Now.Month.ToString() + '-' + DateTime.Now.Day.ToString();
                 }
-                <input asp-for="FechaNacimiento" class="form-control" type="date" min="1990-01-01" max="@date" />
+                <input asp-for="FechaNacimiento" class="form-control" type="date" min="1900-01-01" max="@date" />
                 <span asp-validation-for="FechaNacimiento" class="text-danger"></span>
             </div>
             <div class="form-group">

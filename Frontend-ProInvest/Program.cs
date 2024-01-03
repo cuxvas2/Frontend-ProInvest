@@ -34,5 +34,9 @@ app.MapControllerRoute(
     name: "Admin",
     pattern: "admin",
     defaults: new { controller = "InicioSesion", action = "Index" });
+app.MapControllerRoute(
+    name: "VerificarCorreo",
+    pattern: "verificarCorreo/{folioInversion}/{hash}",
+    defaults: new { controller = "Formulario", action = "VerificarCorreo" });
 
 app.Run();
