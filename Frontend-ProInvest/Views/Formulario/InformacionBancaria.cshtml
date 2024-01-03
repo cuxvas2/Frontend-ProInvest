@@ -26,7 +26,7 @@
                 <span asp-validation-for="OrigenDeFondos" class="text-danger"></span>
             </div>
             <div class="form-check">
-                <small><label asp-for="OrigenLicito" class="form-check-label">Acepto el <a href="#" class="text-decoration-none">Origen de fondos</a></label></small>
+                <small><label asp-for="OrigenLicito" class="form-check-label">Acepto el <a href="AcuerdoOrigenDeFondos" class="text-decoration-none" target="_blank">Origen de fondos</a></label></small>
                 @Html.CheckBoxFor(m => m.OrigenLicito, new{
                     @class="form-check-input"
                 })

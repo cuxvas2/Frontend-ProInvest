@@ -21,7 +21,10 @@ namespace Frontend_ProInvest.Controllers
             ViewBag.TiposInversionList = selectList;
             return View();
         }
-
+        public IActionResult AcuerdoOrigenDeFondos()
+        {
+            return View();
+        }
 
         public IActionResult Privacy()
         {

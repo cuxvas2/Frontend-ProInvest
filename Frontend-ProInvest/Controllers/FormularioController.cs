@@ -372,6 +372,10 @@ namespace Frontend_ProInvest.Controllers
             }
             return View();
         }
+        public IActionResult AcuerdoOrigenDeFondos()
+        {
+            return View();
+        }
         private static string GetSHA256(string str)
         {
             SHA256 sha256 = SHA256.Create();
