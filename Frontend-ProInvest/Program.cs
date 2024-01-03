@@ -49,7 +49,6 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-    defaults: new { controller = "InicioSesion", action = "Index" });
 app.MapControllerRoute(
     name: "VerificarCorreo",
     pattern: "verificarCorreo/{folioInversion}/{hash}",
