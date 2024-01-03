@@ -36,6 +36,7 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "Admin",
     pattern: "admin",
+
     defaults: new { controller = "Admin", action = "InicioSesion" });
 app.MapControllerRoute(
     name: "AdministrarBancos",
@@ -48,6 +49,12 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+    defaults: new { controller = "InicioSesion", action = "Index" });
+app.MapControllerRoute(
+    name: "VerificarCorreo",
+    pattern: "verificarCorreo/{folioInversion}/{hash}",
+    defaults: new { controller = "Formulario", action = "VerificarCorreo" });
+
 
 app.Use(async (context, next) =>
 {
