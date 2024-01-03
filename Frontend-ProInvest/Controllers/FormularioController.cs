@@ -68,6 +68,14 @@ namespace Frontend_ProInvest.Controllers
                     {
                         //enviar sms
                         var correoEnviado = await _usuarios.EnviarCorreoVerificacion(resultado.IdInversionista, contrato.InformacionContrato.FolioInversion, resultado.Token);
+                        var cookieOptions = new CookieOptions
+                        {
+                            HttpOnly = true,
+                            Secure = true,
+                            SameSite = SameSiteMode.None,
+                            Path = "/Formulario",
+                        };
+                        Response.Cookies.Append("Token", resultado.Token, cookieOptions);
                         return RedirectToAction("VerificacionDatosContacto");
                     }
                     else
@@ -104,9 +112,16 @@ namespace Frontend_ProInvest.Controllers
                         case "FINALIZADO":
                             break;
                     }
-                    TempData["FolioContrato"] = solicitudExistente.InformacionContrato.FolioInversion;
-                    TempData["IdInversionista"] = solicitudExistente.InformacionContrato.IdInversionista;
-                    TempData["Token"] = solicitudExistente.Token;
+                    var cookieOptions = new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                        SameSite = SameSiteMode.None,
+                        Path = "/Formulario",
+                    };
+                    Response.Cookies.Append("Token", solicitudExistente.Token, cookieOptions);
+                    Response.Cookies.Append("IdInversionista", solicitudExistente.InformacionContrato.IdInversionista.ToString(), cookieOptions);
+                    Response.Cookies.Append("FolioContrato", solicitudExistente.InformacionContrato.FolioInversion.ToString(), cookieOptions);
                     if (solicitudExistente.InformacionContrato.CorreoVerificacion == true) 
                     {
                         ViewBag.CorreoVerificacion = true;
@@ -192,6 +207,14 @@ namespace Frontend_ProInvest.Controllers
                         if(solicitudExistente.InformacionContrato.CorreoVerificacion == true)
                         {
                             var estadoActualizado = await _usuarios.EditarEstadoUltimaActualizacionContratoInversionAsync(solicitudExistente.InformacionContrato.IdInversionista, "DOMICILIO", DateTime.UtcNow, solicitudExistente.Token);
+                            var cookieOptions = new CookieOptions
+                            {
+                                HttpOnly = true,
+                                Secure = true,
+                                SameSite = SameSiteMode.None,
+                                Path = "/Formulario",
+                            };
+                            Response.Cookies.Append("Token", solicitudExistente.Token, cookieOptions);
                             return RedirectToAction("Direccion");
                         }
                         else
@@ -210,11 +233,11 @@ namespace Frontend_ProInvest.Controllers
         [HttpPost]
         public async Task<ActionResult> EnviarCorreo(string BtnSendEmail)
         {
-            if(BtnSendEmail != null)
+            if (BtnSendEmail != null)
             {
-                var idInversionista = (int)TempData["IdInversionista"];
-                var token = TempData["Token"] as string;
-                var folioContrato = (int)TempData["FolioContrato"];
+                int idInversionista = Int32.Parse(Request.Cookies["IdInversionista"]);   
+                string token = Request.Cookies["Token"];
+                int folioContrato = Int32.Parse(Request.Cookies["FolioContrato"]);
                 try
                 {
                     var correoEnviado = await _usuarios.EnviarCorreoVerificacion(idInversionista, folioContrato, token);
@@ -242,8 +265,15 @@ namespace Frontend_ProInvest.Controllers
                 var solicitudExistente = await _usuarios.ObtenerContratoInversionPorIpAsync(direccionIp);
                 if (solicitudExistente?.InformacionContrato != null)
                 {
-                    TempData["IdInversionista"] = solicitudExistente.InformacionContrato.IdInversionista;
-                    TempData["Token"] = solicitudExistente.Token;
+                    var cookieOptions = new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                        SameSite = SameSiteMode.None,
+                        Path = "/Formulario",
+                    };
+                    Response.Cookies.Append("Token", solicitudExistente.Token, cookieOptions);
+                    Response.Cookies.Append("IdInversionista", solicitudExistente.InformacionContrato.IdInversionista.ToString(), cookieOptions);
                     string estado = solicitudExistente.InformacionContrato.Estado;
                     switch (estado)
                     {
@@ -275,8 +305,8 @@ namespace Frontend_ProInvest.Controllers
                 try
                 {
                     direccion.DireccionIp = ObtenerDireccionIp();
-                    var idInversionista = (int)TempData["IdInversionista"];
-                    var token = TempData["Token"] as string;
+                    int idInversionista = Int32.Parse(Request.Cookies["IdInversionista"]);
+                    string token = Request.Cookies["Token"];
                     direccion.IdInversionista = idInversionista;
                     var inversionistaActualizado = await _usuarios.AnadirInformacionDomicilioInversionistaAsync(direccion, token);
                     var estadoCambiado = await _usuarios.EditarEstadoUltimaActualizacionContratoInversionAsync(idInversionista, "FINANCIERO", DateTime.UtcNow, token);
@@ -399,7 +429,8 @@ namespace Frontend_ProInvest.Controllers
         }
         private string ObtenerDireccionIp()
         {
-            return HttpContext.Connection.RemoteIpAddress.ToString();
+            //return HttpContext.Connection.RemoteIpAddress.ToString();
+            return "12";
         }
     }
 }

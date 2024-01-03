@@ -102,7 +102,7 @@ namespace Frontend_ProInvest.Services.Backend.Tests
                 EmpresaTrabajo = "UV",
                 GradoAcademico = "Licenciatura",
                 Profesion = "Profesor",
-                DireccionIp = "127.0.0.19"
+                DireccionIp = "127.0.1.19"
             };
             var inversionistaObtenido = await Usuarios.AnadirInformacionPersonalInversionistaAsync(inversionistaPrueba);
             await Usuarios.CrearContratoInversionAsync(inversionistaPrueba.DireccionIp, inversionistaObtenido.IdInversionista, DateTime.UtcNow);

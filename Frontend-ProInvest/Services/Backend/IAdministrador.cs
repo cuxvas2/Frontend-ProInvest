@@ -10,4 +10,5 @@ public interface IAdministrador
     public Task<HttpStatusCode> RegistrarBanco(string nombreBanco, string token);
     public Task<HttpStatusCode> EditarBanco(BancosViewModel bancoEditado, string token);
     public Task<HttpStatusCode> EliminarBanco(int idBanco, string token);
+    public Task<OrigenInversionRespuestaJson> ObtenerOrigenesInversion(string token);
 }
