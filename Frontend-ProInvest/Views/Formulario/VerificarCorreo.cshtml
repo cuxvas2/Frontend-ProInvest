@@ -1,0 +1,15 @@
+﻿@{
+    ViewData["Title"] = "Verificar Correo Electrónico";
+}
+
+<div class="row justify-content-md-center">
+    <h3 class="text-center">Verificación de correo electrónico @* y teléfono celular *@</h3>
+    @if (ViewBag.Error != null)
+    {
+        <p class="text-center">@ViewBag.Error</p>
+    }
+    else
+    {
+        <p class="text-center">Se ha verificado correctamente su correo electrónico. Puede cerrar esta ventana y continuar su solicitud de inversión.</p>
+    }
+</div>
