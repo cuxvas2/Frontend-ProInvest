@@ -8,7 +8,7 @@ namespace Frontend_ProInvest.Models
         public int IdInversionista { get; set; }
         [RegularExpression(@"^[a-zA-ZÀ-ÖØ-öø-ÿ0-9&\s]+$", ErrorMessage = "Ingresa una empresa válida sin caracteres especiales.")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
-        [Display(Name = "Empresa*")]
+        [Display(Name = "Empresa o Escuela (si eres estudiante)*")]
         public string EmpresaTrabajo { get; set; }
 
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
@@ -92,18 +92,5 @@ namespace Frontend_ProInvest.Models
             return "CP: " + CodigoPostal + ", Colonia: " + Colonia + ", Municipio: " +
                 Municipio + ", Estado: " + Estado;
         }
-
-        public enum NivelEstudios
-        {
-            Primaria,
-            Secundaria,
-            Bachillerato,
-            TSU,
-            Licenciatura,
-            Ingenieria,
-            Maestria,
-            Doctorado
-        }
-
     }
 }

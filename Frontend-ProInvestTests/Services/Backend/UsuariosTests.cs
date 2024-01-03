@@ -60,7 +60,7 @@ namespace Frontend_ProInvest.Services.Backend.Tests
                 EmpresaTrabajo = "UV",
                 GradoAcademico = "Licenciatura",
                 Profesion = "Profesor",
-                DireccionIp = "127.0.0.1"
+                DireccionIp = "127.0.0.22"
             };
             var obtenido = await Usuarios.AnadirInformacionPersonalInversionistaAsync(esperado);
             Console.WriteLine("Token: " + obtenido.Token);
@@ -81,11 +81,11 @@ namespace Frontend_ProInvest.Services.Backend.Tests
                 EmpresaTrabajo = "UV",
                 GradoAcademico = "Licenciatura",
                 Profesion = "Profesor",
-                DireccionIp = "127.0.0.1"
+                DireccionIp = "127.0.0.21"
             };
             var inversionistaObtenido = await Usuarios.AnadirInformacionPersonalInversionistaAsync(inversionistaPrueba);
             var obtenido = await Usuarios.CrearContratoInversionAsync(inversionistaPrueba.DireccionIp, inversionistaObtenido.IdInversionista, DateTime.UtcNow);
-            Assert.IsTrue(obtenido);
+            Assert.AreEqual(inversionistaObtenido.IdInversionista, inversionistaObtenido.IdInversionista);
         }
 
         [TestMethod()]
@@ -102,18 +102,144 @@ namespace Frontend_ProInvest.Services.Backend.Tests
                 EmpresaTrabajo = "UV",
                 GradoAcademico = "Licenciatura",
                 Profesion = "Profesor",
-                DireccionIp = "127.0.0.4"
+                DireccionIp = "127.0.0.19"
             };
             var inversionistaObtenido = await Usuarios.AnadirInformacionPersonalInversionistaAsync(inversionistaPrueba);
             await Usuarios.CrearContratoInversionAsync(inversionistaPrueba.DireccionIp, inversionistaObtenido.IdInversionista, DateTime.UtcNow);
             var contratoObtenido = await Usuarios.ObtenerContratoInversionPorIpAsync(inversionistaPrueba.DireccionIp);
             Assert.IsTrue(
-                    contratoObtenido.Token != null && 
-                    contratoObtenido.InformacionContrato != null && 
+                    contratoObtenido.Token != null &&
+                    contratoObtenido.InformacionContrato != null &&
                     contratoObtenido.InformacionContrato.IdInversionista == inversionistaObtenido.IdInversionista &&
                     contratoObtenido.InformacionContrato.Estado == "VERIFICACION" &&
                     contratoObtenido.InformacionContrato.DireccionIp == inversionistaPrueba.DireccionIp
                 );
+        }
+
+        [TestMethod()]
+        public async Task EditarEstadoUltimaActualizacionContratoInversionTest()
+        {
+            InversionistaViewModel inversionistaPrueba = new InversionistaViewModel()
+            {
+                Nombre = "Sara",
+                ApellidoPaterno = "Castillo",
+                CorreoElectronico = "uno@gmail.com",
+                TelefonoCelular = "2281234567",
+                FechaNacimiento = DateTime.Now,
+                Rfc = "123456789123",
+                EmpresaTrabajo = "UV",
+                GradoAcademico = "Licenciatura",
+                Profesion = "Profesor",
+                DireccionIp = "127.0.0.20"
+            };
+            var inversionistaObtenido = await Usuarios.AnadirInformacionPersonalInversionistaAsync(inversionistaPrueba);
+            await Usuarios.CrearContratoInversionAsync(inversionistaPrueba.DireccionIp, inversionistaObtenido.IdInversionista, DateTime.UtcNow);
+            var contratoObtenido = await Usuarios.ObtenerContratoInversionPorIpAsync(inversionistaPrueba.DireccionIp);
+            var estadoObtenido = await Usuarios.EditarEstadoUltimaActualizacionContratoInversionAsync(inversionistaObtenido.IdInversionista, "DOMICILIO", DateTime.UtcNow, contratoObtenido.Token);
+            Assert.IsTrue(estadoObtenido);
+        }
+
+        [TestMethod()]
+        public async Task AgregarVerificacionesCorreoTest()
+        {
+            InversionistaViewModel inversionistaPrueba = new InversionistaViewModel()
+            {
+                Nombre = "Juan Luis",
+                ApellidoPaterno = "Perez",
+                ApellidoMaterno = "Sanchez",
+                CorreoElectronico = "cstllsarai@gmail.com",
+                TelefonoCelular = "2281234567",
+                FechaNacimiento = DateTime.Now,
+                Rfc = "123456789123",
+                EmpresaTrabajo = "UV",
+                GradoAcademico = "Licenciatura",
+                Profesion = "Profesor",
+                DireccionIp = "127.0.0.18"
+            };
+            var inversionistaObtenido = await Usuarios.AnadirInformacionPersonalInversionistaAsync(inversionistaPrueba);
+            await Usuarios.CrearContratoInversionAsync(inversionistaPrueba.DireccionIp, inversionistaObtenido.IdInversionista, DateTime.UtcNow);
+            var contratoObtenido = await Usuarios.ObtenerContratoInversionPorIpAsync(inversionistaPrueba.DireccionIp);
+            var verificacionObtenida = await Usuarios.AgregarVerificacionesCorreo(inversionistaObtenido.IdInversionista);
+            Assert.IsTrue(verificacionObtenida);
+        }
+
+        [TestMethod()]
+        public async Task EnviarCorreoVerificacionTest()
+        {
+            InversionistaViewModel inversionistaPrueba = new InversionistaViewModel()
+            {
+                Nombre = "Fernanda",
+                ApellidoPaterno = "Hernández",
+                ApellidoMaterno = "Álvarez",
+                CorreoElectronico = "cstllsarai@gmail.com",
+                TelefonoCelular = "2281234567",
+                FechaNacimiento = DateTime.Now,
+                Rfc = "123456789123",
+                EmpresaTrabajo = "UV",
+                GradoAcademico = "Licenciatura",
+                Profesion = "Profesor",
+                DireccionIp = "127.0.0.17"
+            };
+            var inversionistaObtenido = await Usuarios.AnadirInformacionPersonalInversionistaAsync(inversionistaPrueba);
+            await Usuarios.CrearContratoInversionAsync(inversionistaPrueba.DireccionIp, inversionistaObtenido.IdInversionista, DateTime.UtcNow);
+            var contratoObtenido = await Usuarios.ObtenerContratoInversionPorIpAsync(inversionistaPrueba.DireccionIp);
+            var envioExitoso = await Usuarios.EnviarCorreoVerificacion(inversionistaObtenido.IdInversionista, contratoObtenido.InformacionContrato.FolioInversion, contratoObtenido.Token);
+            Assert.IsTrue(envioExitoso);
+        }
+
+        [TestMethod()]
+        public async Task ObtenerContratoPorFolioInversionTest()
+        {
+            InversionistaViewModel inversionistaPrueba = new InversionistaViewModel()
+            {
+                Nombre = "Angeles",
+                ApellidoPaterno = "Zarate",
+                CorreoElectronico = "cstllsarai@gmail.com",
+                TelefonoCelular = "2281234567",
+                FechaNacimiento = DateTime.Now,
+                Rfc = "123456789123",
+                EmpresaTrabajo = "UV",
+                GradoAcademico = "Licenciatura",
+                Profesion = "Profesor",
+                DireccionIp = "127.0.0.16"
+            };
+            var inversionistaObtenido = await Usuarios.AnadirInformacionPersonalInversionistaAsync(inversionistaPrueba);
+            await Usuarios.CrearContratoInversionAsync(inversionistaPrueba.DireccionIp, inversionistaObtenido.IdInversionista, DateTime.UtcNow);
+            var contratoEsperado = await Usuarios.ObtenerContratoInversionPorIpAsync(inversionistaPrueba.DireccionIp);
+            var contratoObtenido = await Usuarios.ObtenerContratoPorFolioInversion(contratoEsperado.InformacionContrato.FolioInversion);
+            Assert.IsTrue(contratoObtenido.InformacionContrato != null);
+            Assert.IsTrue(contratoObtenido.InformacionContrato.IdInversionista == inversionistaObtenido.IdInversionista);
+            Assert.IsTrue(contratoObtenido.InformacionContrato.FolioInversion == contratoEsperado.InformacionContrato.FolioInversion);
+        }
+
+        [TestMethod()]
+        public async Task AnadirInformacionDomicilioInversionistaAsyncTest()
+        {
+            InversionistaViewModel inversionistaPrueba = new InversionistaViewModel()
+            {
+                Nombre = "Karla",
+                ApellidoPaterno = "Torres",
+                ApellidoMaterno = "Juarez",
+                CorreoElectronico = "cstllsarai@gmail.com",
+                TelefonoCelular = "2281234567",
+                FechaNacimiento = DateTime.Now,
+                Rfc = "123456789123",
+                EmpresaTrabajo = "UV",
+                GradoAcademico = "Licenciatura",
+                Profesion = "Profesor",
+                DireccionIp = "127.0.0.25",
+            };
+            var inversionistaObtenido = await Usuarios.AnadirInformacionPersonalInversionistaAsync(inversionistaPrueba);
+            inversionistaObtenido.Calle = "Calle 3";
+            inversionistaObtenido.Colonia = "Juarez";
+            inversionistaObtenido.CodigoPostal = "12345";
+            inversionistaObtenido.Estado = "Veracruz";
+            inversionistaObtenido.Municipio = "Coatazacoalcos";
+            inversionistaObtenido.NumeroExterior = "3";
+            inversionistaObtenido.DireccionIp = "127.0.0.24";
+            var respuesta = await Usuarios.AnadirInformacionDomicilioInversionistaAsync(inversionistaObtenido, inversionistaObtenido.Token);
+            Assert.IsTrue(respuesta.Token != null);
+            Assert.AreEqual(inversionistaObtenido.Nombre, respuesta.Nombre);
         }
     }
 }
