@@ -1,8 +1,6 @@
 ﻿using Frontend_ProInvest.Models;
 using Frontend_ProInvest.Services.Backend.ModelsHelpers;
 using System.Net;
-using Frontend_ProInvest.Models;
-using Microsoft.AspNetCore.Mvc;
 namespace Frontend_ProInvest.Services.Backend;
 
 public interface IAdministrador

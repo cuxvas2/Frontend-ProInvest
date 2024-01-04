@@ -108,8 +108,6 @@ namespace Frontend_ProInvest.Services.Backend
                 throw new Exception("No se pudieron recuperar los bancos");
                 return HttpStatusCode.InternalServerError;
             }
-
-            return exitoso;
         }
         public async Task<HttpStatusCode> EditarBanco(BancosViewModel bancoNuevo, string token)
         {
@@ -156,8 +154,6 @@ namespace Frontend_ProInvest.Services.Backend
                 throw new Exception("No se pudieron recuperar los bancos");
                 return HttpStatusCode.InternalServerError;
             }
-
-            return eliminacionExitosa;
         }
 
         public async Task<IEnumerable<TipoInversionViewModel>> GetTiposInversionAsync(string accessToken)
@@ -165,7 +161,7 @@ namespace Frontend_ProInvest.Services.Backend
             List<TipoInversionViewModel> usuarios = new();
             IEnumerable<TipoInversionViewModel> tipoInversiones = usuarios;
 
-            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, $"{_configuration["UrlWebAPI"]}/admin/tiposInversion")
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, $"{_configuration["UrlWebAPIAdministrador"]}/tiposInversion")
             {
                 Headers = { { "token", accessToken } }
             };
@@ -202,7 +198,7 @@ namespace Frontend_ProInvest.Services.Backend
                 }),
                 Encoding.UTF8,
                 "application/json");
-            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, $"{_configuration["UrlWebAPI"]}/admin/tiposInversion")
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, $"{_configuration["UrlWebAPIAdministrador"]}/admin/tiposInversion")
             {
                 Content = jsonContent,
                 Headers = { { "token", accessToken } }
@@ -250,7 +246,7 @@ namespace Frontend_ProInvest.Services.Backend
                 Encoding.UTF8,
                 "application/json");
 
-            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Put, $"{_configuration["UrlWebAPI"]}/admin/tiposInversion/{inversion.IdTipo}")
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Put, $"{_configuration["UrlWebAPIAdministrador"]}/tiposInversion/{inversion.IdTipo}")
             {
                 Content = jsonContent,
                 Headers = { { "token", accessToken } }
@@ -279,7 +275,7 @@ namespace Frontend_ProInvest.Services.Backend
         {
             bool eliminacionExitosa = false;
 
-            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Delete, $"{_configuration["UrlWebAPI"]}/admin/tiposInversion/{id}")
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Delete, $"{_configuration["UrlWebAPIAdministrador"]}/admin/tiposInversion/{id}")
             {
                 Headers = { { "token", accessToken } }
             };

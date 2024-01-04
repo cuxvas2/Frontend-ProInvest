@@ -14,5 +14,8 @@
         public DateTime UltimaActualizacion { get; set; }
         public bool? SmsVerificacion {  get; set; }
         public bool? CorreoVerificacion { get; set;  }
+        public int Importe { get; set; }
+        public int IdTipo { get; set; }
+        public string Contrato { get; set; }
     }
 }

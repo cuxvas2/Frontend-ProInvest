@@ -3,9 +3,6 @@ using Frontend_ProInvest.Services.Backend;
 using System.Security.Cryptography;
 using Frontend_ProInvest.Services.Backend.ModelsHelpers;
 using Microsoft.AspNetCore.Mvc;
-using Frontend_ProInvest.Models;
-using Frontend_ProInvest.Services.Backend;
-using System.Security.Claims;
 using System.Net;
 using System.Text;
 
@@ -19,12 +16,7 @@ namespace Frontend_ProInvest.Controllers
         {
             _administrador = administrador;
         }
-        private readonly string tokenAdmin = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3VhcmlvIjp7InVzdWFyaW8iOiJQcm9JbnZlc3RMYXRhbSIsImNvbnRyYXNlbmEiOiJCQjlBREI2RThGQkI4NDBBOEQ2OEY3NEJFRjhEQkNCNzYzQTJFRUEzOEZEMjhDRDZCRDU3QzkzRjM5RkQ4REY1In0sImlhdCI6MTcwNDE3NzEzMywiZXhwIjoxNzA0MTg0MzMzfQ.ESGminJyw2DwkTZzAEk98zb-3wUTjKRlaYQHY-GjU3U";
 
-        public AdminController(IAdministrador administrador)
-        {
-            _administrador = administrador;
-        }
         public IActionResult Menu()
         {
             string token = Request.Cookies["tokenAdministrador"];
@@ -186,7 +178,6 @@ namespace Frontend_ProInvest.Controllers
         public async Task<IActionResult> EliminarBanco(int id)
         {
             string token = HttpContext.Request.Cookies["tokenAdministrador"];
-            Console.WriteLine(token);
             var codigoEstado = await _administrador.EliminarBanco(id, token);
             if (codigoEstado == HttpStatusCode.OK)
             {
@@ -238,7 +229,7 @@ namespace Frontend_ProInvest.Controllers
         public async Task<IActionResult> AdministrarTiposDeInversion()
         {
 
-            var token = tokenAdmin;
+            string token = HttpContext.Request.Cookies["tokenAdministrador"];
             var listaTipoInversiones = await _administrador.GetTiposInversionAsync(token);
             return View(listaTipoInversiones);
         }
@@ -253,8 +244,7 @@ namespace Frontend_ProInvest.Controllers
         {
             if (ModelState.IsValid)
             {
-                //Se guarda en la bd (se envia a la api para que lo guarde)
-                var token = tokenAdmin;
+                string token = HttpContext.Request.Cookies["tokenAdministrador"];
                 var guardadaCorrectamente = await _administrador.AnadirTiposInversionAsync(token, tipoInversion);
                 if (guardadaCorrectamente)
                 {
@@ -271,7 +261,7 @@ namespace Frontend_ProInvest.Controllers
                 return NotFound();
             }
 
-            var token = tokenAdmin;
+            string token = HttpContext.Request.Cookies["tokenAdministrador"];
             var tipoInversion = await _administrador.GetTipoInversionAsync(token, id);
             if (tipoInversion == null)
             {
@@ -290,7 +280,7 @@ namespace Frontend_ProInvest.Controllers
 
             if (ModelState.IsValid)
             {
-                var token = tokenAdmin;
+                string token = HttpContext.Request.Cookies["tokenAdministrador"];
                 var guardadoExitoso = await _administrador.EditarTipoInversionAsync(token, tipoInversion);
                 if (guardadoExitoso)
                 {
@@ -311,7 +301,7 @@ namespace Frontend_ProInvest.Controllers
                 return NotFound();
             }
 
-            var token = tokenAdmin;
+            string token = HttpContext.Request.Cookies["tokenAdministrador"];
             var tipoInversion = await _administrador.GetTipoInversionAsync(token, id);
             if (tipoInversion == null)
             {
@@ -329,7 +319,7 @@ namespace Frontend_ProInvest.Controllers
                 return NotFound();
             }
 
-            var token = tokenAdmin;
+            string token = HttpContext.Request.Cookies["tokenAdministrador"];
             var eliminadoExitoso = await _administrador.EliminarTipoInversionAsync(token, id);
             if (!eliminadoExitoso)
             {
