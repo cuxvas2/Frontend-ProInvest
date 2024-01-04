@@ -108,8 +108,6 @@ namespace Frontend_ProInvest.Services.Backend
                 throw new Exception("No se pudieron recuperar los bancos");
                 return HttpStatusCode.InternalServerError;
             }
-
-            return exitoso;
         }
         public async Task<HttpStatusCode> EditarBanco(BancosViewModel bancoNuevo, string token)
         {
@@ -156,8 +154,6 @@ namespace Frontend_ProInvest.Services.Backend
                 throw new Exception("No se pudieron recuperar los bancos");
                 return HttpStatusCode.InternalServerError;
             }
-
-            return eliminacionExitosa;
         }
 
         public async Task<IEnumerable<TipoInversionViewModel>> GetTiposInversionAsync(string accessToken)

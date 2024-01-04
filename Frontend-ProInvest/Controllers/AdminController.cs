@@ -20,11 +20,6 @@ namespace Frontend_ProInvest.Controllers
             _administrador = administrador;
         }
         private readonly string tokenAdmin = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3VhcmlvIjp7InVzdWFyaW8iOiJQcm9JbnZlc3RMYXRhbSIsImNvbnRyYXNlbmEiOiJCQjlBREI2RThGQkI4NDBBOEQ2OEY3NEJFRjhEQkNCNzYzQTJFRUEzOEZEMjhDRDZCRDU3QzkzRjM5RkQ4REY1In0sImlhdCI6MTcwNDE3NzEzMywiZXhwIjoxNzA0MTg0MzMzfQ.ESGminJyw2DwkTZzAEk98zb-3wUTjKRlaYQHY-GjU3U";
-
-        public AdminController(IAdministrador administrador)
-        {
-            _administrador = administrador;
-        }
         public IActionResult Menu()
         {
             string token = Request.Cookies["tokenAdministrador"];
