@@ -1,4 +1,5 @@
 ﻿const canvas = document.querySelector('canvas');
+const botonEnviar = document.getElementById('boton-enviar');
 const botonLimpiar = document.querySelector('.boton-limpiar');
 //contexto del canvas para dibujar en 2d
 const ctx = canvas.getContext('2d');
@@ -27,11 +28,11 @@ window.obtenerImagen = () => {
 };
 
 ////impresion de contrato con su firma
-//botonContrato.addEventListener('click', (e) => {
-//    e.preventDefault();
+botonEnviar.addEventListener('click', (e) => {
+    const url = canvas.toDataURL();
+    const ventana = window.open('ContratoDeInversion');
+});
 
-//    const ventana = window.open('contrato.html');
-//});
 
 const obtenerPosicionCursor = (e) => {
     positionX = e.clientX - e.target.getBoundingClientRect().left;
