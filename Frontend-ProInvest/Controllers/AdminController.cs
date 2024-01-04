@@ -37,8 +37,11 @@ namespace Frontend_ProInvest.Controllers
             }
             else
             {
-
                 var listaBancos = await _administrador.ObtenerBancos(token);
+                if (TempData["Error"] != null)
+                {
+                    ViewBag.Error = TempData["Error"].ToString();
+                }
                 return View(listaBancos);
             }
         }
@@ -85,7 +88,7 @@ namespace Frontend_ProInvest.Controllers
                     {
                         HttpOnly = true,
                         Secure = true,
-                        SameSite = SameSiteMode.Strict,
+                        SameSite = SameSiteMode.Lax,
                         Path = "/admin"
                     };
 
@@ -108,23 +111,27 @@ namespace Frontend_ProInvest.Controllers
         {
             return View();
         }
-        [HttpPost]
-        public async Task<IActionResult> AgregarBanco(string nombreBanco)
+        [HttpPost, ActionName("AgregarBancoPost")]
+        public async Task<IActionResult> AgregarBanco(BancosViewModel bancoAgregar)
         {
-            string token = Request.Cookies["tokenAdministrador"];
-            var codigoEstado = await _administrador.RegistrarBanco(nombreBanco, token);
-            if (codigoEstado == HttpStatusCode.OK)
+            string token = HttpContext.Request.Cookies["tokenAdministrador"];
+            var codigoEstado = await _administrador.RegistrarBanco(bancoAgregar.Banco, token);
+            if (codigoEstado == HttpStatusCode.Created)
             {
-                return RedirectToAction(nameof(AdministrarBancos));
+                return Redirect("/admin/bancos");
+            }
+            if (codigoEstado == HttpStatusCode.BadRequest)
+            {
+                TempData["Error"] = "El banco ya existe.";
+                return RedirectToAction("AdministrarBancos");
             }
             if (codigoEstado == HttpStatusCode.Unauthorized)
             {
-                Console.WriteLine(codigoEstado);
                 return Redirect("/admin");
             }
             else
             {
-                return NotFound();
+                return Redirect("/admin");
             }
         }
         [HttpGet]
@@ -137,14 +144,15 @@ namespace Frontend_ProInvest.Controllers
             };
             return View(bancoEditar);
         }
-        [HttpPost]
-        public async Task<IActionResult> EditarBanco(BancosViewModel bancoEditar)
+        [HttpPost, ActionName("EditarBancoPost")]
+        public async Task<IActionResult> EditarBanco(int id, BancosViewModel bancoEditar)
         {
-            string token = Request.Cookies["tokenAdministrador"];
+            bancoEditar.IdBanco = id;
+            string token = HttpContext.Request.Cookies["tokenAdministrador"];
             var codigoEstado = await _administrador.EditarBanco(bancoEditar, token);
             if (codigoEstado == HttpStatusCode.OK)
-            {
-                return RedirectToAction(nameof(AdministrarBancos));
+            {   
+                return Redirect("/admin/bancos");
             }
             if (codigoEstado == HttpStatusCode.Unauthorized)
             {
@@ -152,7 +160,7 @@ namespace Frontend_ProInvest.Controllers
             }
             else
             {
-                return NotFound();
+                return Redirect("/admin");
             }
         }
         [HttpGet]
@@ -165,14 +173,15 @@ namespace Frontend_ProInvest.Controllers
             };
             return View(bancoEliminar);
         }
-        [HttpPost]
-        public async Task<IActionResult> EliminarBanco(int idBanco)
+        [HttpPost, ActionName("EliminarBancoPost")]
+        public async Task<IActionResult> EliminarBanco(int id)
         {
-            string token = Request.Cookies["tokenAdministrador"];
-            var codigoEstado = await _administrador.EliminarBanco(idBanco, token);
+            string token = HttpContext.Request.Cookies["tokenAdministrador"];
+            Console.WriteLine(token);
+            var codigoEstado = await _administrador.EliminarBanco(id, token);
             if (codigoEstado == HttpStatusCode.OK)
             {
-                return RedirectToAction(nameof(AdministrarBancos));
+                return Redirect("/admin/bancos");
             }
             if (codigoEstado == HttpStatusCode.Unauthorized)
             {

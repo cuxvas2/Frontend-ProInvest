@@ -10,7 +10,7 @@ $(document).ready(function() {
         var button = $(event.relatedTarget); 
         var idBanco = button.closest('tr').data('banco-id'); 
         var nombreBanco = button.closest('tr').data('banco-nombre');
-        var url = '/Admin/EditarBanco?idBanco=' + encodeURIComponent(idBanco) + '&nombreBanco=' + encodeURIComponent(nombreBanco);
+        var url = '/admin/EditarBanco?idBanco=' + encodeURIComponent(idBanco) + '&nombreBanco=' + encodeURIComponent(nombreBanco);
         $.get(url, function(data) {
             $('#contenedorEditar').html(data);
         });
@@ -20,7 +20,7 @@ $(document).ready(function() {
         var button = $(event.relatedTarget); 
         var idBanco = button.closest('tr').data('banco-id'); 
         var nombreBanco = button.closest('tr').data('banco-nombre');
-        var url = '/Admin/EliminarBanco?idBanco=' + encodeURIComponent(idBanco) + '&nombreBanco=' + encodeURIComponent(nombreBanco);
+        var url = '/admin/EliminarBanco?idBanco=' + encodeURIComponent(idBanco) + '&nombreBanco=' + encodeURIComponent(nombreBanco);
         $.get(url, function(data) {
             $('#contenedorEliminar').html(data);
         });
