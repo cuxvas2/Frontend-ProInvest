@@ -15,6 +15,10 @@ builder.Services.AddHttpClient();
 builder.Services.AddScoped<IUsuarios, Usuarios>();
 builder.Services.AddScoped<IAdministrador, Administrador>();
 
+//Soporte para consultar el API
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<IAdministrador, Administrador>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
