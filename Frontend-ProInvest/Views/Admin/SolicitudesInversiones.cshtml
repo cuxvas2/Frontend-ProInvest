@@ -1,0 +1,52 @@
+﻿@model IEnumerable<Frontend_ProInvest.Models.SolicitudInversionViewModel>
+
+@{
+    ViewData["Title"] = "SolicitudesInversiones";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="text-center mb-4"> Solicitudes de inversión </h2>
+
+@if (Model != null && Model.Count() > 0)
+{
+    <div class="table-responsive">
+        <table class="table table-bordered small">
+            <thead class="table-light">
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.FolioInversion)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.NombreCompleto)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Estado)
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FolioInversion)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.NombreCompleto)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Estado)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="text-center text-black-50">
+        No se pudo conectar al servidor, intentalo mas tarde. 
+    </div>
+}
+
