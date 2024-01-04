@@ -3,6 +3,7 @@ using Frontend_ProInvest.Services.Backend;
 using Frontend_ProInvest.Services.Backend.ModelsHelpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
 using System;
 using System.Diagnostics.Contracts;
 using System.IO;
@@ -378,6 +379,8 @@ namespace Frontend_ProInvest.Controllers
                     Console.WriteLine("\nToken creado en origenes: " + solicitudExistente.Token);
                     if (origenesToken?.OrigenesInversion != null)
                     {
+                        string origenesJson = JsonConvert.SerializeObject(origenesToken.OrigenesInversion);
+                        TempData["OrigenesInversion"] = origenesJson;
                         SelectList selectList = new(origenesToken.OrigenesInversion, "IdOrigen", "NombreOrigen");
                         ViewBag.OrigenesInversion = selectList;
                     }
@@ -391,12 +394,27 @@ namespace Frontend_ProInvest.Controllers
                 var bancos = await _administrador.ObtenerBancos(token);
                 if(bancos?.Count() > 0)
                 {
+                    string bancosJson = JsonConvert.SerializeObject(bancos);
+                    TempData["Bancos"] = bancosJson;
                     SelectList selectList = new(bancos, "IdBanco", "Banco");
                     ViewBag.Bancos = selectList;
                 }
                 else
                 {
                     ViewBag.Error = "No se pudieron recuperar los bancos";
+                }
+                Console.WriteLine("\n\n*********************************************\nToken recuperado cookie banco: " + token);
+                var tiposInversion = await _administrador.GetTiposInversionAsync(token);
+                if(tiposInversion?.Count() > 0)
+                {
+                    string tiposInversionJson = JsonConvert.SerializeObject(tiposInversion);
+                    TempData["TiposInversion"] = tiposInversionJson;
+                    SelectList selectList = new(tiposInversion, "IdTipo", "Nombre");
+                    ViewBag.TiposInversion = selectList;
+                }
+                else
+                {
+                    ViewBag.Error = "No se pudieron recuperar los tipos de inversión";
                 }
             }
             catch (Exception)
@@ -426,10 +444,41 @@ namespace Frontend_ProInvest.Controllers
                 }
                 if(!ModelState.IsValid)
                 {
+                    string bancosJson = TempData["Bancos"] as string;
+                    TempData["Bancos"] = bancosJson;
+                    IEnumerable<BancosViewModel> bancos = JsonConvert.DeserializeObject<IEnumerable<BancosViewModel>>(bancosJson);
+                    SelectList selectList = new(bancos, "IdBanco", "Banco");
+                    ViewBag.Bancos = selectList;
+
+                    string origenesJson = TempData["OrigenesInversion"] as string;
+                    TempData["OrigenesInversion"] = origenesJson;
+                    IEnumerable<OrigenInversionViewModel> origenes = JsonConvert.DeserializeObject<IEnumerable<OrigenInversionViewModel>>(origenesJson);
+                    selectList = new(origenes, "IdOrigen", "NombreOrigen");
+                    ViewBag.OrigenesInversion = selectList;
+
+                    string tiposInversionJson = TempData["TiposInversion"] as string;
+                    TempData["TiposInversion"] = tiposInversionJson;
+                    IEnumerable<TipoInversionViewModel> tiposInversion = JsonConvert.DeserializeObject<IEnumerable<TipoInversionViewModel>>(tiposInversionJson);
+                    selectList = new(tiposInversion, "IdTipo", "Nombre");
+                    ViewBag.TiposInversion = selectList;
+
                     return View(modelo);
                 }
                 else
                 {
+                    Console.WriteLine("*********INFO BANCARIA*********");
+                    Console.WriteLine("idBanco: " + modelo.Banco);
+                    Console.WriteLine("cuenta: " +modelo.Cuenta);
+                    Console.WriteLine("clabe: " + modelo.ClabeInterbancaria);
+                    Console.WriteLine("folio: " + folioInversion.ToString());
+                    Console.WriteLine("token: " + Request.Cookies["Token"]);
+                    Console.WriteLine("********CONTRATO********");
+                    Console.WriteLine("idInversionista: " + Request.Cookies["IdInversionista"]);
+                    Console.WriteLine("idTipo: " + modelo.TipoDeInversion);
+                    Console.WriteLine("idOrigen: " + modelo.OrigenDeFondos);
+                    Console.WriteLine("importe: " + modelo.CantidadAInvertir);
+                    Console.WriteLine("plazoAnios: " + modelo.Anios);
+                    Console.WriteLine("token: " + Request.Cookies["Token"]);
                     return RedirectToAction("Direccion");
                 }
             }

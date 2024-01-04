@@ -21,7 +21,7 @@ namespace Frontend_ProInvest.Models
         public string ClabeInterbancaria { get; set; }
 
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
-        [RegularExpression(@"^[a-zA-ZÀ-ÖØ-öø-ÿ\s]+$", ErrorMessage = "Ingresa un banco válido (solo letras).")]
+        [RegularExpression(@"^[a-zA-ZÀ-ÖØ-öø-ÿ0-9\s]+$", ErrorMessage = "Ingresa un banco válido (solo letras, números y espacios).")]
         [Display(Name = "Banco*")]
         public string Banco { get; set; }
 
