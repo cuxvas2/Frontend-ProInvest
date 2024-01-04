@@ -383,5 +383,43 @@ namespace Frontend_ProInvest.Services.Backend
             }
             return contrato;
         }
+        public async Task<ContratoInversionModel> AgregarContratoCompletoContratoInversionAsync(string base64Url, int idInversionista, string token)
+        {
+            ContratoInversionModel contrato = new();
+            var requestData = new
+            {
+                contrato = base64Url
+            };
+            StringContent jsonContent = new(JsonSerializer.Serialize(requestData), Encoding.UTF8, "application/json");
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Put, $"{_configuration["UrlWebAPIInversionista"]}/contratosInversion/contrato/{idInversionista}")
+            {
+                Content = jsonContent
+            };
+            httpRequestMessage.Headers.Add("token", token);
+            var httpClient = _httpClientFactory.CreateClient();
+            try
+            {
+                var response = await httpClient.SendAsync(httpRequestMessage);
+                if(response.IsSuccessStatusCode)
+                {
+                    var respuesta = await response.Content.ReadFromJsonAsync<ContratoInversionRespuestaJson>();
+                    if(respuesta.ContratoActualizado.Count > 1)
+                    {
+                        contrato = respuesta.ContratoActualizado[1];
+                    }
+                }
+                else
+                {
+                    throw new Exception();
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                throw new Exception("No se pudieron guardar los cambios");
+            }
+            return contrato;
+        }
     }
 }

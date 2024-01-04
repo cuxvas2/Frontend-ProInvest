@@ -35,6 +35,10 @@
                             <option value="@origen.Value" data-idOrigen="@origen.Value">@origen.Text</option>
                         }
                     }
+                    else
+                    {
+                        <option value="">No hay origenes de inversión disponibles</option>
+                    }
                 </select>
                 <span asp-validation-for="OrigenDeFondos" class="text-danger"></span>
             </div>
@@ -70,6 +74,10 @@
                             <option value="@banco.Value" data-idBanco="@banco.Value">@banco.Text</option>
                         }
                     }
+                    else
+                    {
+                        <option value="">No hay bancos disponibles</option>
+                    }
                 </select>
                 <span asp-validation-for="Banco" class="text-danger"></span>
             </div>
@@ -87,6 +95,17 @@
                 <label asp-for="TipoDeInversion" class="control-label"></label>
                 <select asp-for="TipoDeInversion" class="form-select">
                     <option value="">Seleccione un valor para este campo</option>
+                    @if(ViewBag.TiposInversion != null)
+                    {
+                        foreach (var tipo in ViewBag.TiposInversion)
+                        {
+                            <option value="@tipo.Value" data-idTipo="@tipo.Value">@tipo.Text</option>
+                        }
+                    }
+                    else
+                    {
+                        <option value="">No hay tipos de inversión disponibles</option>
+                    })
                 </select>
                 <span asp-validation-for="TipoDeInversion" class="text-danger"></span>
             </div>
@@ -114,7 +133,7 @@
                 })
             </div>
             <div class="text-center mt-3">
-                <input type="submit" name="BtnNext" value="Siguiente" class="btn btn-primary" />
+                <input type="submit" name="BtnNext" value="Siguiente" class="btn btn-primary" id="boton-enviar"/>
                 <input type="submit" name="BtnPrevious" value="Anterior" class="btn btn-primary" style="display:none;" />
             </div>
         </form>

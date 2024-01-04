@@ -161,7 +161,7 @@ namespace Frontend_ProInvest.Services.Backend
             List<TipoInversionViewModel> usuarios = new();
             IEnumerable<TipoInversionViewModel> tipoInversiones = usuarios;
 
-            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, $"{_configuration["UrlWebAPI"]}/admin/tiposInversion")
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, $"{_configuration["UrlWebAPIAdministrador"]}/tiposInversion")
             {
                 Headers = { { "token", accessToken } }
             };

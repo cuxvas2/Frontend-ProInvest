@@ -3,6 +3,7 @@ using Frontend_ProInvest.Services.Backend;
 using Frontend_ProInvest.Services.Backend.ModelsHelpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
 using System;
 using System.Diagnostics.Contracts;
 using System.IO;
@@ -378,6 +379,8 @@ namespace Frontend_ProInvest.Controllers
                     Console.WriteLine("\nToken creado en origenes: " + solicitudExistente.Token);
                     if (origenesToken?.OrigenesInversion != null)
                     {
+                        string origenesJson = JsonConvert.SerializeObject(origenesToken.OrigenesInversion);
+                        TempData["OrigenesInversion"] = origenesJson;
                         SelectList selectList = new(origenesToken.OrigenesInversion, "IdOrigen", "NombreOrigen");
                         ViewBag.OrigenesInversion = selectList;
                     }
@@ -391,12 +394,27 @@ namespace Frontend_ProInvest.Controllers
                 var bancos = await _administrador.ObtenerBancos(token);
                 if(bancos?.Count() > 0)
                 {
+                    string bancosJson = JsonConvert.SerializeObject(bancos);
+                    TempData["Bancos"] = bancosJson;
                     SelectList selectList = new(bancos, "IdBanco", "Banco");
                     ViewBag.Bancos = selectList;
                 }
                 else
                 {
                     ViewBag.Error = "No se pudieron recuperar los bancos";
+                }
+                Console.WriteLine("\n\n*********************************************\nToken recuperado cookie banco: " + token);
+                var tiposInversion = await _administrador.GetTiposInversionAsync(token);
+                if(tiposInversion?.Count() > 0)
+                {
+                    string tiposInversionJson = JsonConvert.SerializeObject(tiposInversion);
+                    TempData["TiposInversion"] = tiposInversionJson;
+                    SelectList selectList = new(tiposInversion, "IdTipo", "Nombre");
+                    ViewBag.TiposInversion = selectList;
+                }
+                else
+                {
+                    ViewBag.Error = "No se pudieron recuperar los tipos de inversión";
                 }
             }
             catch (Exception)
@@ -408,11 +426,10 @@ namespace Frontend_ProInvest.Controllers
         }
 
         [HttpPost]
-        public ActionResult InformacionBancaria(InformacionBancariaViewModel modelo, string BtnPrevious, string BtnNext)
+        public async Task<ActionResult> InformacionBancaria(InformacionBancariaViewModel modelo, string BtnPrevious, string BtnNext)
         {
             if(BtnNext!= null)
             {
-                int folioInversion = Int32.Parse(Request.Cookies["FolioInversion"]);
                 if(ModelState.IsValid)
                 {
                     if(modelo.OrigenLicito == false)
@@ -424,16 +441,53 @@ namespace Frontend_ProInvest.Controllers
                         ModelState.AddModelError("AceptaContrato", "Debe aceptar el Contrato de inversión para continuar.");
                     }
                 }
-                if(!ModelState.IsValid)
+                if (ModelState.IsValid)
                 {
-                    return View(modelo);
-                }
-                else
-                {
-                    return RedirectToAction("Direccion");
+                    string token = Request.Cookies["Token"];
+                    int folioInversion = Int32.Parse(Request.Cookies["FolioInversion"]);
+                    int idInversionista = Int32.Parse(Request.Cookies["IdInversionista"]);
+                    try
+                    {
+                        modelo.IdBanco = Int32.Parse(modelo.Banco);
+                        modelo.IdTipo = Int32.Parse(modelo.TipoDeInversion);
+                        modelo.IdOrigen = Int32.Parse(modelo.OrigenDeFondos);
+
+                        var informacionBancaria = await _usuarios.CrearInformacionBancaria(modelo, folioInversion, token);
+                        var contratoActualizado = await _usuarios.EditarInversionContratoInversion(modelo, idInversionista, token);
+                        if (informacionBancaria && contratoActualizado != null)
+                        {
+                            var estadoCambiado = await _usuarios.EditarEstadoUltimaActualizacionContratoInversionAsync(idInversionista, "EXPEDIENTE", DateTime.UtcNow, token);
+                            if (estadoCambiado)
+                            {
+                                return RedirectToAction("Direccion");
+                            }
+                        }
+                        throw new Exception();
+                    }
+                    catch (Exception)
+                    {
+                        ViewBag.Error = "No se pudo guardar el proceso de tu solicitud. Intente de nuevo más tarde";
+                    }
                 }
             }
-            return View();
+            string bancosJson = TempData["Bancos"] as string;
+            TempData["Bancos"] = bancosJson;
+            IEnumerable<BancosViewModel> bancos = JsonConvert.DeserializeObject<IEnumerable<BancosViewModel>>(bancosJson);
+            SelectList selectList = new(bancos, "IdBanco", "Banco");
+            ViewBag.Bancos = selectList;
+
+            string origenesJson = TempData["OrigenesInversion"] as string;
+            TempData["OrigenesInversion"] = origenesJson;
+            IEnumerable<OrigenInversionViewModel> origenes = JsonConvert.DeserializeObject<IEnumerable<OrigenInversionViewModel>>(origenesJson);
+            selectList = new(origenes, "IdOrigen", "NombreOrigen");
+            ViewBag.OrigenesInversion = selectList;
+
+            string tiposInversionJson = TempData["TiposInversion"] as string;
+            TempData["TiposInversion"] = tiposInversionJson;
+            IEnumerable<TipoInversionViewModel> tiposInversion = JsonConvert.DeserializeObject<IEnumerable<TipoInversionViewModel>>(tiposInversionJson);
+            selectList = new(tiposInversion, "IdTipo", "Nombre");
+            ViewBag.TiposInversion = selectList;
+            return View(modelo);
         }
 
         [HttpPost]
@@ -446,6 +500,28 @@ namespace Frontend_ProInvest.Controllers
                 return Json(new { colonias = coloniasView });
             }
             catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+            }
+        }
+        [HttpPost]
+        public async Task<JsonResult> EnviarFirma(string base64url)
+        {
+            var token = Request.Cookies["Token"];
+            var idInversionista = Int32.Parse(Request.Cookies["IdInversionista"]);
+            try
+            {
+                var contratoActualizado = await _usuarios.AgregarContratoCompletoContratoInversionAsync(base64url, idInversionista, token);
+                if(contratoActualizado?.Contrato != base64url)
+                {
+                    throw new Exception();
+                }
+                else
+                {
+                    return Json(new { exito = true });
+                }
+            }
+            catch(Exception ex)
             {
                 return Json(new { error = ex.Message });
             }
