@@ -28,7 +28,7 @@
             @foreach (var item in Model)
             {
                 <tr data-banco-id="@item.IdBanco" data-banco-nombre="@item.Banco">
-                    <td  class="text-center">
+                    <td class="text-center">
                         @Html.DisplayFor(modelItem => item.Banco)
                     </td>
                     <td class="text-center">
@@ -44,6 +44,16 @@
         </tbody>
     </table>
 </div>
+@if (!String.IsNullOrEmpty(ViewBag.Error))
+{
+    <div class="col-mb-6">
+        <div class="alert alert-danger d-flex flex-row mb-3">
+            @ViewBag.Error
+            <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
+
+}
 <div class="modal fade" id="modalAgregar" tabindex="-1" aria-labelledby="modalAgregarLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
