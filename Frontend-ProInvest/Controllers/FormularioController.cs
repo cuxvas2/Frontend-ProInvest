@@ -499,6 +499,28 @@ namespace Frontend_ProInvest.Controllers
                 return Json(new { error = ex.Message });
             }
         }
+        [HttpPost]
+        public async Task<JsonResult> EnviarFirma(string base64url)
+        {
+            var token = Request.Cookies["Token"];
+            var idInversionista = Int32.Parse(Request.Cookies["IdInversionista"]);
+            try
+            {
+                var contratoActualizado = await _usuarios.AgregarContratoCompletoContratoInversionAsync(base64url, idInversionista, token);
+                if(contratoActualizado?.Contrato != base64url)
+                {
+                    throw new Exception();
+                }
+                else
+                {
+                    return Json(new { exito = true });
+                }
+            }
+            catch(Exception ex)
+            {
+                return Json(new { error = ex.Message });
+            }
+        }
         public async Task<IActionResult> VerificarCorreo(int folioInversion, string hash)
         {
             try

@@ -17,5 +17,6 @@ namespace Frontend_ProInvest.Services.Backend
         public Task<InversionistaViewModel> AnadirInformacionDomicilioInversionistaAsync(InversionistaViewModel direccion, string token);
         public Task<bool> CrearInformacionBancaria(InformacionBancariaViewModel datosAIngresar, int folioInversion, string token);
         public Task<ContratoInversionModel> EditarInversionContratoInversion(InformacionBancariaViewModel datosAIngresar, int idInversionista, string token);
+        public Task<ContratoInversionModel> AgregarContratoCompletoContratoInversionAsync(string base64Url, int idInversionista, string token);
     }
 }

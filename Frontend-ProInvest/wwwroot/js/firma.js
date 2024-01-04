@@ -28,10 +28,25 @@ window.obtenerImagen = () => {
 };
 
 ////impresion de contrato con su firma
-botonEnviar.addEventListener('click', (e) => {
-    const url = canvas.toDataURL();
-    const ventana = window.open('ContratoDeInversion');
+//botonEnviar.addEventListener('click', (e) => {
+//    const url = canvas.toDataURL();
+//    const ventana = window.open('ContratoDeInversion');
+//});
+
+
+botonEnviar.addEventListener('click', async function () {
+    const urlImagen = canvas.toDataURL();
+    try {
+        var result = await $.ajax({
+            url: '/Formulario/EnviarFirma',
+            type: 'POST',
+            data: { base64url: urlImagen }
+        });
+    } catch (error) {
+        alert('Ocurrió un error al guardar la firma. Por favor, inténtalo de nuevo.');
+    }
 });
+
 
 
 const obtenerPosicionCursor = (e) => {
