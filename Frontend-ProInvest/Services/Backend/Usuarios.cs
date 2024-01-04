@@ -1,5 +1,6 @@
 ﻿using Frontend_ProInvest.Models;
 using Frontend_ProInvest.Services.Backend.ModelsHelpers;
+using NuGet.Common;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
@@ -109,7 +110,7 @@ namespace Frontend_ProInvest.Services.Backend
                 HttpResponseMessage response = await httpClient.PostAsJsonAsync($"{_configuration["UrlWebAPIInversionista"]}/contratosInversion", requestData);
                 if (response.IsSuccessStatusCode)
                 {
-                    var informacionContrato = await response.Content.ReadFromJsonAsync<InformacionContrato>();
+                    var informacionContrato = await response.Content.ReadFromJsonAsync<ContratoInversionModel>();
                     contratoCreado.InformacionContrato = informacionContrato;
                 }
             }
@@ -244,7 +245,7 @@ namespace Frontend_ProInvest.Services.Backend
                 var response = await httpClient.SendAsync(httpRequestMessage);
                 if (response.IsSuccessStatusCode)
                 {
-                    var informacionContrato = await response.Content.ReadFromJsonAsync<InformacionContrato>();
+                    var informacionContrato = await response.Content.ReadFromJsonAsync<ContratoInversionModel>();
                     respuesta.InformacionContrato = informacionContrato;
                 }
             }
@@ -302,6 +303,85 @@ namespace Frontend_ProInvest.Services.Backend
                 throw new Exception("No se pudieron guardar los datos");
             }
             return inversionistaRetornado;
+        }
+        public async Task<bool> CrearInformacionBancaria(InformacionBancariaViewModel datosAIngresar, int folioInversion, string token)
+        {
+            bool informacionBancariaCreada = false;
+            var requestData = new
+            {
+                cuenta = datosAIngresar.Cuenta,
+                clabeInterbancaria = datosAIngresar.ClabeInterbancaria,
+                idBanco = datosAIngresar.IdBanco
+            };
+            StringContent jsonContent = new(JsonSerializer.Serialize(requestData), Encoding.UTF8, "application/json");
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, $"{_configuration["UrlWebAPIInversionista"]}/informacionBancaria/{folioInversion}")
+            {
+                Content = jsonContent
+            };
+            httpRequestMessage.Headers.Add("token", token);
+            var httpClient = _httpClientFactory.CreateClient();
+            try
+            {
+                var response = await httpClient.SendAsync(httpRequestMessage);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    informacionBancariaCreada = true;
+                }
+                else
+                {
+                    throw new Exception();
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                throw new Exception("No se pudieron guardar los datos");
+            }
+            return informacionBancariaCreada;
+        }
+        public async Task<ContratoInversionModel>EditarInversionContratoInversion(InformacionBancariaViewModel datosAIngresar, int idInversionista, string token)
+        {
+            ContratoInversionModel contrato = new();
+            var requestData = new
+            {
+                idTipo = datosAIngresar.IdTipo,
+                idOrigen = datosAIngresar.IdOrigen,
+                importe = datosAIngresar.CantidadAInvertir,
+                plazoAnios = datosAIngresar.Anios
+            };
+            StringContent jsonContent = new(JsonSerializer.Serialize(requestData), Encoding.UTF8, "application/json");
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Put, $"{_configuration["UrlWebAPIInversionista"]}/contratosInversion/{idInversionista}")
+            {
+                Content = jsonContent
+            };
+            httpRequestMessage.Headers.Add("token", token);
+            var httpClient = _httpClientFactory.CreateClient();
+            try
+            {
+                var response = await httpClient.SendAsync(httpRequestMessage);
+                if(response.IsSuccessStatusCode)
+                {
+                    var respuesta = await response.Content.ReadFromJsonAsync<ContratoInversionRespuestaJson>();
+                    if(respuesta.ContratoActualizado.Count > 1)
+                    {
+                        contrato = respuesta.ContratoActualizado[1];
+                    }
+                }
+                else
+                {
+                    throw new Exception();
+                }
+
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                throw new Exception("No se pudieron guardar los datos");
+            }
+            return contrato;
         }
     }
 }

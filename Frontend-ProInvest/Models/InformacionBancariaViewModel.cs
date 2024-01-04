@@ -48,6 +48,8 @@ namespace Frontend_ProInvest.Models
 
         [Required(ErrorMessage = "Debe aceptar el Acuerdo de Origen de Fondos para continuar.")]
         public bool OrigenLicito { get; set; }
-
+        public int IdBanco { get; set; }
+        public int IdTipo { get; set; }
+        public int IdOrigen { get; set; }
     }
 }

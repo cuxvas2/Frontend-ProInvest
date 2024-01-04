@@ -17,4 +17,5 @@ public interface IAdministrador
     public Task<TipoInversionViewModel> GetTipoInversionAsync(string token, int id);
     public Task<bool> EditarTipoInversionAsync(string token, TipoInversionViewModel inversion);
     public Task<bool> EliminarTipoInversionAsync(string token, int id);
+    public Task<OrigenInversionRespuestaJson> ObtenerOrigenesInversion(string token);
 }

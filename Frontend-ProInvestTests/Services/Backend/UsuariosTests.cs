@@ -18,6 +18,7 @@ namespace Frontend_ProInvest.Services.Backend.Tests
     public class UsuariosTests
     {
         private Usuarios Usuarios { get; set; }
+        private readonly string DireccionIP = "25";
         public UsuariosTests()
         {
             var configuration = new Mock<IConfiguration>();
@@ -60,7 +61,7 @@ namespace Frontend_ProInvest.Services.Backend.Tests
                 EmpresaTrabajo = "UV",
                 GradoAcademico = "Licenciatura",
                 Profesion = "Profesor",
-                DireccionIp = "127.0.0.22"
+                DireccionIp = "1.0.0."+DireccionIP
             };
             var obtenido = await Usuarios.AnadirInformacionPersonalInversionistaAsync(esperado);
             Console.WriteLine("Token: " + obtenido.Token);
@@ -81,11 +82,11 @@ namespace Frontend_ProInvest.Services.Backend.Tests
                 EmpresaTrabajo = "UV",
                 GradoAcademico = "Licenciatura",
                 Profesion = "Profesor",
-                DireccionIp = "127.0.0.21"
+                DireccionIp = "2.0.0."+DireccionIP
             };
             var inversionistaObtenido = await Usuarios.AnadirInformacionPersonalInversionistaAsync(inversionistaPrueba);
             var obtenido = await Usuarios.CrearContratoInversionAsync(inversionistaPrueba.DireccionIp, inversionistaObtenido.IdInversionista, DateTime.UtcNow);
-            Assert.AreEqual(inversionistaObtenido.IdInversionista, inversionistaObtenido.IdInversionista);
+            Assert.AreEqual(inversionistaObtenido.IdInversionista, obtenido.InformacionContrato.IdInversionista);
         }
 
         [TestMethod()]
@@ -102,7 +103,7 @@ namespace Frontend_ProInvest.Services.Backend.Tests
                 EmpresaTrabajo = "UV",
                 GradoAcademico = "Licenciatura",
                 Profesion = "Profesor",
-                DireccionIp = "127.0.0.19"
+                DireccionIp = "3.0.1."+DireccionIP
             };
             var inversionistaObtenido = await Usuarios.AnadirInformacionPersonalInversionistaAsync(inversionistaPrueba);
             await Usuarios.CrearContratoInversionAsync(inversionistaPrueba.DireccionIp, inversionistaObtenido.IdInversionista, DateTime.UtcNow);
@@ -130,7 +131,7 @@ namespace Frontend_ProInvest.Services.Backend.Tests
                 EmpresaTrabajo = "UV",
                 GradoAcademico = "Licenciatura",
                 Profesion = "Profesor",
-                DireccionIp = "127.0.0.20"
+                DireccionIp = "4.0.0."+DireccionIP
             };
             var inversionistaObtenido = await Usuarios.AnadirInformacionPersonalInversionistaAsync(inversionistaPrueba);
             await Usuarios.CrearContratoInversionAsync(inversionistaPrueba.DireccionIp, inversionistaObtenido.IdInversionista, DateTime.UtcNow);
@@ -154,7 +155,7 @@ namespace Frontend_ProInvest.Services.Backend.Tests
                 EmpresaTrabajo = "UV",
                 GradoAcademico = "Licenciatura",
                 Profesion = "Profesor",
-                DireccionIp = "127.0.0.18"
+                DireccionIp = "5.0.0."+DireccionIP
             };
             var inversionistaObtenido = await Usuarios.AnadirInformacionPersonalInversionistaAsync(inversionistaPrueba);
             await Usuarios.CrearContratoInversionAsync(inversionistaPrueba.DireccionIp, inversionistaObtenido.IdInversionista, DateTime.UtcNow);
@@ -178,12 +179,12 @@ namespace Frontend_ProInvest.Services.Backend.Tests
                 EmpresaTrabajo = "UV",
                 GradoAcademico = "Licenciatura",
                 Profesion = "Profesor",
-                DireccionIp = "127.0.0.17"
+                DireccionIp = "6.0.0."+DireccionIP
             };
             var inversionistaObtenido = await Usuarios.AnadirInformacionPersonalInversionistaAsync(inversionistaPrueba);
             await Usuarios.CrearContratoInversionAsync(inversionistaPrueba.DireccionIp, inversionistaObtenido.IdInversionista, DateTime.UtcNow);
             var contratoObtenido = await Usuarios.ObtenerContratoInversionPorIpAsync(inversionistaPrueba.DireccionIp);
-            var envioExitoso = await Usuarios.EnviarCorreoVerificacion(inversionistaObtenido.IdInversionista, contratoObtenido.InformacionContrato.FolioInversion, contratoObtenido.Token);
+            var envioExitoso = await Usuarios.EnviarCorreoVerificacion(inversionistaObtenido.IdInversionista, (int)contratoObtenido.InformacionContrato.FolioInversion, contratoObtenido.Token);
             Assert.IsTrue(envioExitoso);
         }
 
@@ -201,12 +202,12 @@ namespace Frontend_ProInvest.Services.Backend.Tests
                 EmpresaTrabajo = "UV",
                 GradoAcademico = "Licenciatura",
                 Profesion = "Profesor",
-                DireccionIp = "127.0.0.16"
+                DireccionIp = "7.0.0." + DireccionIP
             };
             var inversionistaObtenido = await Usuarios.AnadirInformacionPersonalInversionistaAsync(inversionistaPrueba);
             await Usuarios.CrearContratoInversionAsync(inversionistaPrueba.DireccionIp, inversionistaObtenido.IdInversionista, DateTime.UtcNow);
             var contratoEsperado = await Usuarios.ObtenerContratoInversionPorIpAsync(inversionistaPrueba.DireccionIp);
-            var contratoObtenido = await Usuarios.ObtenerContratoPorFolioInversion(contratoEsperado.InformacionContrato.FolioInversion);
+            var contratoObtenido = await Usuarios.ObtenerContratoPorFolioInversion((int)contratoEsperado.InformacionContrato.FolioInversion);
             Assert.IsTrue(contratoObtenido.InformacionContrato != null);
             Assert.IsTrue(contratoObtenido.InformacionContrato.IdInversionista == inversionistaObtenido.IdInversionista);
             Assert.IsTrue(contratoObtenido.InformacionContrato.FolioInversion == contratoEsperado.InformacionContrato.FolioInversion);
@@ -227,7 +228,7 @@ namespace Frontend_ProInvest.Services.Backend.Tests
                 EmpresaTrabajo = "UV",
                 GradoAcademico = "Licenciatura",
                 Profesion = "Profesor",
-                DireccionIp = "127.0.0.25",
+                DireccionIp = "8.0.0."+DireccionIP
             };
             var inversionistaObtenido = await Usuarios.AnadirInformacionPersonalInversionistaAsync(inversionistaPrueba);
             inversionistaObtenido.Calle = "Calle 3";

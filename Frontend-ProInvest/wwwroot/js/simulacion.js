@@ -71,7 +71,8 @@ function calcularInversion(rendimiento, rendimientoAnterior) {
 
 
 const tiposInversionSelector = document.getElementById("tiposInversion");
-const button = document.querySelector('.btn');
+const button = document.getElementById("btnMostrarGrafica");
+//const button = document.querySelector('.btn');
 const slider = document.querySelector('.slider');
 const importeInput = document.getElementById("importe");
 const form = document.getElementById("formulario-simulacion");
