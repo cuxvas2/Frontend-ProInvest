@@ -1,8 +1,11 @@
-﻿namespace Frontend_ProInvest.Services.Backend.ModelsHelpers
+﻿using Frontend_ProInvest.Models;
+
+namespace Frontend_ProInvest.Services.Backend.ModelsHelpers
 {
     public class ContratoInversionRespuestaJson
     {
-        public InformacionContrato InformacionContrato { get; set; }
+        public ContratoInversionModel InformacionContrato { get; set; }
+        public List<ContratoInversionModel> ContratoActualizado { get; set; }
         public string Token { get; set; }
     }
     public class InformacionContrato

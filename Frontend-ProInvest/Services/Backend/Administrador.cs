@@ -298,5 +298,29 @@ namespace Frontend_ProInvest.Services.Backend
 
             return eliminacionExitosa;
         }
+        public async Task<OrigenInversionRespuestaJson> ObtenerOrigenesInversion(string token)
+        {
+            OrigenInversionRespuestaJson origenesInversion = new();
+            
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, $"{_configuration["UrlWebAPIAdministrador"]}/origenesInversion")
+            {
+                Headers = { { "token", token} }
+            };
+            var httpClient = _httpClientFactory.CreateClient();
+            try
+            {
+                var response = await httpClient.SendAsync(httpRequestMessage);
+                if (response.IsSuccessStatusCode)
+                {
+                    origenesInversion = await response.Content.ReadFromJsonAsync<OrigenInversionRespuestaJson>();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw new Exception("No se pudieron recuperar los origenes de inversi�n");
+            }
+            return origenesInversion;
+        }
     }
 }

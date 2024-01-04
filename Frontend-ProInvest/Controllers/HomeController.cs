@@ -16,9 +16,15 @@ namespace Frontend_ProInvest.Controllers
 
         public IActionResult Index()
         {
+            List<TipoInversionViewModel> listaViewModel = ObtenerListaViewModel();
+            SelectList selectList = new SelectList(listaViewModel, "Rendimiento", "Nombre");
+            ViewBag.TiposInversionList = selectList;
             return View();
         }
-
+        public IActionResult AcuerdoOrigenDeFondos()
+        {
+            return View();
+        }
 
         public IActionResult Privacy()
         {

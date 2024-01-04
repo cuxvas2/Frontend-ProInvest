@@ -2,6 +2,8 @@
 using Frontend_ProInvest.Services.Backend;
 using Frontend_ProInvest.Services.Backend.ModelsHelpers;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Diagnostics.Contracts;
 using System.IO;
 using System.Security.Cryptography;
@@ -12,9 +14,11 @@ namespace Frontend_ProInvest.Controllers
     public class FormularioController : Controller
     {
         private readonly IUsuarios _usuarios;
-        public FormularioController(IUsuarios usuarios)
+        private readonly IAdministrador _administrador;
+        public FormularioController(IUsuarios usuarios, IAdministrador administrador)
         {
             _usuarios = usuarios;
+            _administrador = administrador;
         }
         public IActionResult Index()
         {
@@ -67,7 +71,15 @@ namespace Frontend_ProInvest.Controllers
                     if (resultado?.Token != null && contrato.InformacionContrato != null)
                     {
                         //enviar sms
-                        var correoEnviado = await _usuarios.EnviarCorreoVerificacion(resultado.IdInversionista, contrato.InformacionContrato.FolioInversion, resultado.Token);
+                        var correoEnviado = await _usuarios.EnviarCorreoVerificacion(resultado.IdInversionista, (int)contrato.InformacionContrato.FolioInversion, resultado.Token);
+                        var cookieOptions = new CookieOptions
+                        {
+                            HttpOnly = true,
+                            Secure = true,
+                            SameSite = SameSiteMode.None,
+                            Path = "/Formulario",
+                        };
+                        Response.Cookies.Append("Token", resultado.Token, cookieOptions);
                         return RedirectToAction("VerificacionDatosContacto");
                     }
                     else
@@ -104,13 +116,20 @@ namespace Frontend_ProInvest.Controllers
                         case "FINALIZADO":
                             break;
                     }
-                    TempData["FolioContrato"] = solicitudExistente.InformacionContrato.FolioInversion;
-                    TempData["IdInversionista"] = solicitudExistente.InformacionContrato.IdInversionista;
-                    TempData["Token"] = solicitudExistente.Token;
+                    var cookieOptions = new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                        SameSite = SameSiteMode.None,
+                        Path = "/Formulario",
+                    };
+                    Response.Cookies.Append("Token", solicitudExistente.Token, cookieOptions);
+                    Response.Cookies.Append("IdInversionista", solicitudExistente.InformacionContrato.IdInversionista.ToString(), cookieOptions);
+                    Response.Cookies.Append("FolioContrato", solicitudExistente.InformacionContrato.FolioInversion.ToString(), cookieOptions);
                     if (solicitudExistente.InformacionContrato.CorreoVerificacion == true) 
                     {
                         ViewBag.CorreoVerificacion = true;
-                        var estadoActualizado = await _usuarios.EditarEstadoUltimaActualizacionContratoInversionAsync(solicitudExistente.InformacionContrato.IdInversionista, "DOMICILIO", DateTime.UtcNow, solicitudExistente.Token);
+                        var estadoActualizado = await _usuarios.EditarEstadoUltimaActualizacionContratoInversionAsync((int)solicitudExistente.InformacionContrato.IdInversionista, "DOMICILIO", DateTime.UtcNow, solicitudExistente.Token);
                         if (estadoActualizado)
                         {
                             return RedirectToAction("Direccion");
@@ -191,7 +210,15 @@ namespace Frontend_ProInvest.Controllers
                     {
                         if(solicitudExistente.InformacionContrato.CorreoVerificacion == true)
                         {
-                            var estadoActualizado = await _usuarios.EditarEstadoUltimaActualizacionContratoInversionAsync(solicitudExistente.InformacionContrato.IdInversionista, "DOMICILIO", DateTime.UtcNow, solicitudExistente.Token);
+                            var estadoActualizado = await _usuarios.EditarEstadoUltimaActualizacionContratoInversionAsync((int)solicitudExistente.InformacionContrato.IdInversionista, "DOMICILIO", DateTime.UtcNow, solicitudExistente.Token);
+                            var cookieOptions = new CookieOptions
+                            {
+                                HttpOnly = true,
+                                Secure = true,
+                                SameSite = SameSiteMode.None,
+                                Path = "/Formulario",
+                            };
+                            Response.Cookies.Append("Token", solicitudExistente.Token, cookieOptions);
                             return RedirectToAction("Direccion");
                         }
                         else
@@ -210,11 +237,11 @@ namespace Frontend_ProInvest.Controllers
         [HttpPost]
         public async Task<ActionResult> EnviarCorreo(string BtnSendEmail)
         {
-            if(BtnSendEmail != null)
+            if (BtnSendEmail != null)
             {
-                var idInversionista = (int)TempData["IdInversionista"];
-                var token = TempData["Token"] as string;
-                var folioContrato = (int)TempData["FolioContrato"];
+                int idInversionista = Int32.Parse(Request.Cookies["IdInversionista"]);   
+                string token = Request.Cookies["Token"];
+                int folioContrato = Int32.Parse(Request.Cookies["FolioContrato"]);
                 try
                 {
                     var correoEnviado = await _usuarios.EnviarCorreoVerificacion(idInversionista, folioContrato, token);
@@ -242,8 +269,15 @@ namespace Frontend_ProInvest.Controllers
                 var solicitudExistente = await _usuarios.ObtenerContratoInversionPorIpAsync(direccionIp);
                 if (solicitudExistente?.InformacionContrato != null)
                 {
-                    TempData["IdInversionista"] = solicitudExistente.InformacionContrato.IdInversionista;
-                    TempData["Token"] = solicitudExistente.Token;
+                    var cookieOptions = new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                        SameSite = SameSiteMode.None,
+                        Path = "/Formulario",
+                    };
+                    Response.Cookies.Append("Token", solicitudExistente.Token, cookieOptions);
+                    Response.Cookies.Append("IdInversionista", solicitudExistente.InformacionContrato.IdInversionista.ToString(), cookieOptions);
                     string estado = solicitudExistente.InformacionContrato.Estado;
                     switch (estado)
                     {
@@ -275,8 +309,8 @@ namespace Frontend_ProInvest.Controllers
                 try
                 {
                     direccion.DireccionIp = ObtenerDireccionIp();
-                    var idInversionista = (int)TempData["IdInversionista"];
-                    var token = TempData["Token"] as string;
+                    int idInversionista = Int32.Parse(Request.Cookies["IdInversionista"]);
+                    string token = Request.Cookies["Token"];
                     direccion.IdInversionista = idInversionista;
                     var inversionistaActualizado = await _usuarios.AnadirInformacionDomicilioInversionistaAsync(direccion, token);
                     var estadoCambiado = await _usuarios.EditarEstadoUltimaActualizacionContratoInversionAsync(idInversionista, "FINANCIERO", DateTime.UtcNow, token);
@@ -298,7 +332,79 @@ namespace Frontend_ProInvest.Controllers
         }
         public async Task<ActionResult> InformacionBancaria()
         {
-            return View("InformacionBancaria");  
+            try
+            {
+                var direccionIp = ObtenerDireccionIp();
+                var solicitudExistente = await _usuarios.ObtenerContratoInversionPorIpAsync(direccionIp);
+                if (solicitudExistente?.InformacionContrato != null)
+                {
+                    var cookieOptions = new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                        SameSite = SameSiteMode.None,
+                        Path = "/Formulario",
+                    };
+                    Response.Cookies.Append("Token", solicitudExistente.Token, cookieOptions);
+                    Console.WriteLine("\nToken generado en contrato: " + solicitudExistente.Token);
+                    Response.Cookies.Append("FolioInversion", solicitudExistente.InformacionContrato.FolioInversion.ToString(), cookieOptions);
+                    Response.Cookies.Append("IdInversionista", solicitudExistente.InformacionContrato.IdInversionista.ToString(), cookieOptions);
+                    string estado = solicitudExistente.InformacionContrato.Estado;
+                    switch (estado)
+                    {
+                        case "VERIFICACION":
+                            return RedirectToAction("VerificacionDatosContacto");
+                        case "DOMICILIO":
+                            return RedirectToAction("Direccion");
+                        case "EXPEDIENTE":
+                            break;
+                        case "FINALIZADO":
+                            break;
+                    }
+                }
+                var token = Request.Cookies["Token"];
+                Console.WriteLine("\nToken recuperado de cookie contrato: " + token);
+                var origenesToken = await _administrador.ObtenerOrigenesInversion(token);
+                if(origenesToken.Token != null)
+                {
+                    var cookieOptions = new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                        SameSite = SameSiteMode.None,
+                        Path = "/Formulario",
+                    };
+                    Response.Cookies.Append("Token", solicitudExistente.Token, cookieOptions);
+                    Console.WriteLine("\nToken creado en origenes: " + solicitudExistente.Token);
+                    if (origenesToken?.OrigenesInversion != null)
+                    {
+                        SelectList selectList = new(origenesToken.OrigenesInversion, "IdOrigen", "NombreOrigen");
+                        ViewBag.OrigenesInversion = selectList;
+                    }
+                    else
+                    {
+                        ViewBag.Error = "No se pudieron recuperar los origenes de inversión";
+                    }
+                }
+                token = Request.Cookies["Token"];
+                Console.WriteLine("\nToken recuperado cookie origen: " + token);
+                var bancos = await _administrador.ObtenerBancos(token);
+                if(bancos?.Count() > 0)
+                {
+                    SelectList selectList = new(bancos, "IdBanco", "Banco");
+                    ViewBag.Bancos = selectList;
+                }
+                else
+                {
+                    ViewBag.Error = "No se pudieron recuperar los bancos";
+                }
+            }
+            catch (Exception)
+            {
+                ViewBag.Error = "No se pudo recuperar el proceso de su solicitud. Intente de nuevo más tarde";
+                return RedirectToAction("DatosPersonales");
+            }
+            return View();
         }
 
         [HttpPost]
@@ -306,6 +412,7 @@ namespace Frontend_ProInvest.Controllers
         {
             if(BtnNext!= null)
             {
+                int folioInversion = Int32.Parse(Request.Cookies["FolioInversion"]);
                 if(ModelState.IsValid)
                 {
                     if(modelo.OrigenLicito == false)
@@ -350,7 +457,7 @@ namespace Frontend_ProInvest.Controllers
                 var contrato = await _usuarios.ObtenerContratoPorFolioInversion(folioInversion);
                 if(contrato != null && contrato.InformacionContrato != null)
                 {
-                    int idInversionista = contrato.InformacionContrato.IdInversionista;
+                    int idInversionista = (int)contrato.InformacionContrato.IdInversionista;
                     var hashId = GetSHA256(idInversionista.ToString());
                     if(hashId == hash)
                     {
@@ -370,6 +477,14 @@ namespace Frontend_ProInvest.Controllers
             {
                 ViewBag.Error = ex.Message;
             }
+            return View();
+        }
+        public IActionResult AcuerdoOrigenDeFondos()
+        {
+            return View();
+        }
+        public IActionResult ContratoDeInversion()
+        {
             return View();
         }
         private static string GetSHA256(string str)
@@ -395,7 +510,8 @@ namespace Frontend_ProInvest.Controllers
         }
         private string ObtenerDireccionIp()
         {
-            return HttpContext.Connection.RemoteIpAddress.ToString();
+            //return HttpContext.Connection.RemoteIpAddress.ToString();
+            return "12";
         }
     }
 }

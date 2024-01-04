@@ -8,6 +8,12 @@
 </head>
 
 <div class="row justify-content-md-center">
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @ViewBag.Error
+        </div>
+    }
     <div class="col-md-4 col-form-img">
         <img src="/images/infoBancaria.jpg" alt="Casa, monedas y billetes" class="img-fluid form-img">
     </div>
@@ -22,11 +28,18 @@
                 <label asp-for="OrigenDeFondos" class="control-label"></label>
                 <select asp-for="OrigenDeFondos" class="form-select">
                     <option value="">Seleccione un valor para este campo</option>
+                    @if(ViewBag.OrigenesInversion != null)
+                    {
+                        foreach (var origen in ViewBag.OrigenesInversion)
+                        {
+                            <option value="@origen.Value" data-idOrigen="@origen.Value">@origen.Text</option>
+                        }
+                    }
                 </select>
                 <span asp-validation-for="OrigenDeFondos" class="text-danger"></span>
             </div>
             <div class="form-check">
-                <small><label asp-for="OrigenLicito" class="form-check-label">Acepto el <a href="#" class="text-decoration-none">Origen de fondos</a></label></small>
+                <small><label asp-for="OrigenLicito" class="form-check-label">Acepto el <a href="AcuerdoOrigenDeFondos" class="text-decoration-none" target="_blank">Origen de fondos</a></label></small>
                 @Html.CheckBoxFor(m => m.OrigenLicito, new{
                     @class="form-check-input"
                 })
@@ -50,6 +63,13 @@
                 <label asp-for="Banco" class="control-label"></label>
                 <select asp-for="Banco" class="form-select">
                     <option value="">Seleccione un valor para este campo</option>
+                    @if(ViewBag.Bancos != null)
+                    {
+                        foreach (var banco in ViewBag.Bancos)
+                        {
+                            <option value="@banco.Value" data-idBanco="@banco.Value">@banco.Text</option>
+                        }
+                    }
                 </select>
                 <span asp-validation-for="Banco" class="text-danger"></span>
             </div>
@@ -72,13 +92,13 @@
             </div>
             <div class="form-group">
                 <label class="control-label">Firma Digital*</label>
-                <p><small>Esta firma se usará para firmar el <a href="#" class="text-decoration-none">Contrato de Inversión</a></small></p>
+                <p><small>Esta firma se usará para firmar el <a href="ContratoDeInversion" class="text-decoration-none" target="_blank">Contrato de Inversión</a></small></p>
                 <div class="text-center">
                     <canvas class="firma-pad"></canvas>
                 </div>
                 <p class="text-center">
                     <small>
-                        <a href="#" class="boton-limpiar text-decoration-none">Limpiar</a>
+                        <a href="" class="boton-limpiar text-decoration-none">Limpiar</a>
                     </small>
                 </p>
             </div>
