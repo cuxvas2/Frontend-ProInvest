@@ -426,11 +426,10 @@ namespace Frontend_ProInvest.Controllers
         }
 
         [HttpPost]
-        public ActionResult InformacionBancaria(InformacionBancariaViewModel modelo, string BtnPrevious, string BtnNext)
+        public async Task<ActionResult> InformacionBancaria(InformacionBancariaViewModel modelo, string BtnPrevious, string BtnNext)
         {
             if(BtnNext!= null)
             {
-                int folioInversion = Int32.Parse(Request.Cookies["FolioInversion"]);
                 if(ModelState.IsValid)
                 {
                     if(modelo.OrigenLicito == false)
@@ -442,47 +441,53 @@ namespace Frontend_ProInvest.Controllers
                         ModelState.AddModelError("AceptaContrato", "Debe aceptar el Contrato de inversión para continuar.");
                     }
                 }
-                if(!ModelState.IsValid)
+                if (ModelState.IsValid)
                 {
-                    string bancosJson = TempData["Bancos"] as string;
-                    TempData["Bancos"] = bancosJson;
-                    IEnumerable<BancosViewModel> bancos = JsonConvert.DeserializeObject<IEnumerable<BancosViewModel>>(bancosJson);
-                    SelectList selectList = new(bancos, "IdBanco", "Banco");
-                    ViewBag.Bancos = selectList;
+                    string token = Request.Cookies["Token"];
+                    int folioInversion = Int32.Parse(Request.Cookies["FolioInversion"]);
+                    int idInversionista = Int32.Parse(Request.Cookies["IdInversionista"]);
+                    try
+                    {
+                        modelo.IdBanco = Int32.Parse(modelo.Banco);
+                        modelo.IdTipo = Int32.Parse(modelo.TipoDeInversion);
+                        modelo.IdOrigen = Int32.Parse(modelo.OrigenDeFondos);
 
-                    string origenesJson = TempData["OrigenesInversion"] as string;
-                    TempData["OrigenesInversion"] = origenesJson;
-                    IEnumerable<OrigenInversionViewModel> origenes = JsonConvert.DeserializeObject<IEnumerable<OrigenInversionViewModel>>(origenesJson);
-                    selectList = new(origenes, "IdOrigen", "NombreOrigen");
-                    ViewBag.OrigenesInversion = selectList;
-
-                    string tiposInversionJson = TempData["TiposInversion"] as string;
-                    TempData["TiposInversion"] = tiposInversionJson;
-                    IEnumerable<TipoInversionViewModel> tiposInversion = JsonConvert.DeserializeObject<IEnumerable<TipoInversionViewModel>>(tiposInversionJson);
-                    selectList = new(tiposInversion, "IdTipo", "Nombre");
-                    ViewBag.TiposInversion = selectList;
-
-                    return View(modelo);
-                }
-                else
-                {
-                    Console.WriteLine("*********INFO BANCARIA*********");
-                    Console.WriteLine("idBanco: " + modelo.Banco);
-                    Console.WriteLine("cuenta: " +modelo.Cuenta);
-                    Console.WriteLine("clabe: " + modelo.ClabeInterbancaria);
-                    Console.WriteLine("folio: " + folioInversion.ToString());
-                    Console.WriteLine("token: " + Request.Cookies["Token"]);
-                    Console.WriteLine("********CONTRATO********");
-                    Console.WriteLine("idInversionista: " + Request.Cookies["IdInversionista"]);
-                    Console.WriteLine("idTipo: " + modelo.TipoDeInversion);
-                    Console.WriteLine("idOrigen: " + modelo.OrigenDeFondos);
-                    Console.WriteLine("importe: " + modelo.CantidadAInvertir);
-                    Console.WriteLine("plazoAnios: " + modelo.Anios);
-                    Console.WriteLine("token: " + Request.Cookies["Token"]);
-                    return RedirectToAction("Direccion");
+                        var informacionBancaria = await _usuarios.CrearInformacionBancaria(modelo, folioInversion, token);
+                        var contratoActualizado = await _usuarios.EditarInversionContratoInversion(modelo, idInversionista, token);
+                        if (informacionBancaria && contratoActualizado != null)
+                        {
+                            var estadoCambiado = await _usuarios.EditarEstadoUltimaActualizacionContratoInversionAsync(idInversionista, "EXPEDIENTE", DateTime.UtcNow, token);
+                            if (estadoCambiado)
+                            {
+                                return RedirectToAction("Direccion");
+                            }
+                        }
+                        throw new Exception();
+                    }
+                    catch (Exception)
+                    {
+                        ViewBag.Error = "No se pudo guardar el proceso de tu solicitud. Intente de nuevo más tarde";
+                    }
                 }
             }
-            return View();
+            string bancosJson = TempData["Bancos"] as string;
+            TempData["Bancos"] = bancosJson;
+            IEnumerable<BancosViewModel> bancos = JsonConvert.DeserializeObject<IEnumerable<BancosViewModel>>(bancosJson);
+            SelectList selectList = new(bancos, "IdBanco", "Banco");
+            ViewBag.Bancos = selectList;
+
+            string origenesJson = TempData["OrigenesInversion"] as string;
+            TempData["OrigenesInversion"] = origenesJson;
+            IEnumerable<OrigenInversionViewModel> origenes = JsonConvert.DeserializeObject<IEnumerable<OrigenInversionViewModel>>(origenesJson);
+            selectList = new(origenes, "IdOrigen", "NombreOrigen");
+            ViewBag.OrigenesInversion = selectList;
+
+            string tiposInversionJson = TempData["TiposInversion"] as string;
+            TempData["TiposInversion"] = tiposInversionJson;
+            IEnumerable<TipoInversionViewModel> tiposInversion = JsonConvert.DeserializeObject<IEnumerable<TipoInversionViewModel>>(tiposInversionJson);
+            selectList = new(tiposInversion, "IdTipo", "Nombre");
+            ViewBag.TiposInversion = selectList;
+            return View(modelo);
         }
 
         [HttpPost]
