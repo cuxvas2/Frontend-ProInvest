@@ -18,15 +18,9 @@ namespace Frontend_ProInvest.Controllers
         {
             return View();
         }
-        public IActionResult FormularioInversion()
-        {
-            List<TipoInversionViewModel> listaViewModel = ObtenerListaViewModel();
-            SelectList selectList = new SelectList(listaViewModel, "Rendimiento", "Nombre");
-            ViewBag.TiposInversionList = selectList;
-            return View();
-        }
 
-        public async Task<IActionResult> Privacy()
+
+        public IActionResult Privacy()
         {
             List<TipoInversionViewModel> listaViewModel = ObtenerListaViewModel();
             SelectList selectList = new SelectList(listaViewModel, "Rendimiento", "Nombre");

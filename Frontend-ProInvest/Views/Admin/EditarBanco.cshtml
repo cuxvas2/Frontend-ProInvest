@@ -1,0 +1,21 @@
+﻿@model Frontend_ProInvest.Models.BancosViewModel
+@{
+    Layout = null;
+}
+<form asp-action="EditarBancoPost" asp-controller="admin" method="post" asp-route-id="@Model.IdBanco">
+    <div class="form-group">
+        <label for="Nombre">Nombre</label>
+        <input type="text" class="form-control" id="Nombre" asp-for="Banco" value="@Model.Banco" required>
+    </div>
+    <div class="container-fluid text-end mt-4">
+        <button type="submit" class="btn btn-primary">Agregar</button>
+    </div>
+
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script defer src="~/js/direcciones.js"></script>
+}

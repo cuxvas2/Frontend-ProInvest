@@ -1,0 +1,12 @@
+﻿@model Frontend_ProInvest.Models.BancosViewModel
+@{
+    Layout = null;
+}
+<form asp-action="EliminarBancoPost" method="post" asp-controller="admin" asp-route-id="@Model.IdBanco">
+    <div class="form-group">
+        <label for="Nombre">¿Estas seguro de querer eliminar el banco @Model.Banco?</label>
+    </div>
+    <div class="container-fluid text-end mt-4">
+        <button type="submit" class="btn btn-primary">Eliminar</button>
+    </div>
+</form>

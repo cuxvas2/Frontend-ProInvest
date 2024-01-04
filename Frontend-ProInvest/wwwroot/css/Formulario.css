@@ -1,0 +1,21 @@
+﻿@media only screen and (max-width: 767.90px) {
+    .form-img {
+        display: none;
+    }
+}
+
+.form-img {
+    height: 100%; 
+    object-fit: cover;"
+}
+
+.col-form-img {
+    overflow: hidden;
+}
+
+.firma-pad {
+    cursor: url(..//images/pluma.png) 0 30, pointer;
+    border: 2px solid black;
+    border-radius: 4px;
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+}

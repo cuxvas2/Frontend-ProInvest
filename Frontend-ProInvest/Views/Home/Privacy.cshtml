@@ -4,14 +4,15 @@
 }
 <head>
     <script defer src="~/js/simulacion.js"></script>
+    <link rel="stylesheet" href="~/css/GraficaSimulacion.css" asp-append-version="true" />
 </head>
 <div class="container">
-    <div class="row">
+    <div class="row d-flex align-items-center">
         <div class="col-xs-12 col-sm-6 col-md-6">
             <form id="formulario-simulacion" for="click">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="card mx-auto mt-3" style="max-width: 500px;">
-                    <div class="card-header">
+                    <div class="card-header text-center fs-4">
                         Simula tu inversión
                     </div>
                     <div class="card-body">
@@ -45,7 +46,7 @@
         <div class="col-xs-12 col-sm-6 col-md-6">
             <div class="container-chart">
                 <div class="chart"></div>
-                <a href="FormularioInversion" class="btn btn-primary" id="btnInvertir">Invertir ahora</a>
+                <a href="../Formulario/DatosPersonales" class="btn btn-primary" id="btnInvertir">Invertir ahora</a>
             </div>
         </div>
     </div>

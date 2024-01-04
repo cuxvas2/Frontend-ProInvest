@@ -1,0 +1,80 @@
+﻿@model Frontend_ProInvest.Models.InversionistaViewModel
+
+@{
+    ViewData["Title"] = "Dirección";
+}
+<head>
+    <link rel="stylesheet" href="~/css/Formulario.css" asp-append-version="true" />
+</head>
+<div class="row justify-content-md-center">
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @ViewBag.Error
+        </div>
+    }
+    <div class="col-md-4">
+        <h2 class="text-lg-center">Una inversión segura</h2>
+        <h4 class="text-lg-center">Dirección</h4>
+        <h6 class="text-md-center">Inicia tu vida como inversionista con nosotros</h6>
+        <form asp-action="Direccion">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <p class="text-sm-center">Los elementos marcados con un asterísco (*) son obligatorios</p>
+            <div class="form-group">
+                <label asp-for="Calle" class="control-label"></label>
+                <input asp-for="Calle" class="form-control" />
+                <span asp-validation-for="Calle" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NumeroExterior" class="control-label"></label>
+                <input asp-for="NumeroExterior" class="form-control" />
+                <span asp-validation-for="NumeroExterior" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NumeroInterior" class="control-label"></label>
+                <input asp-for="NumeroInterior" class="form-control" />
+                <span asp-validation-for="NumeroInterior" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CodigoPostal" class="control-label"></label>
+                <input asp-for="CodigoPostal" class="form-control" id="codigoInput"/>
+                <span asp-validation-for="CodigoPostal" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Colonia" class="control-label"></label>
+                <select asp-for="Colonia" class="form-select" id="coloniaSelect">
+                    <option value="">Seleccione un valor para este campo</option>
+                </select>
+                <span asp-validation-for="Colonia" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Estado" class="control-label"></label>
+                <select asp-for="Estado" class="form-select" id="estadoSelect">
+                    <option value="">Seleccione un valor para este campo</option>
+                </select>
+                <span asp-validation-for="Estado" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Municipio" class="control-label"></label>
+                <select asp-for="Municipio" class="form-select" id="municipioSelect">
+                    <option value="">Seleccione un valor para este campo</option>
+                </select>
+                <span asp-validation-for="Municipio" class="text-danger"></span>
+            </div>            
+            <div class="text-center mt-3">
+                <input type="submit" name="BtnNext" value="Siguiente" class="btn btn-primary" />
+                <input type="submit" name="BtnPrevious" value="Anterior" class="btn btn-primary" style="display:none;" />
+            </div>
+        </form>
+    </div>
+    <div class="col-md-4 col-form-img">
+        <img src="/images/inversionCasa.jpg" alt="Planos de casa y casa de madera" class="img-fluid form-img">
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
