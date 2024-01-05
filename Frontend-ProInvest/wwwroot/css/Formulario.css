@@ -19,3 +19,10 @@
     border-radius: 4px;
     -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
 }
+.card-expediente {
+    margin: 10px;
+    width: 100%;
+}
+.card-title {
+    white-space: normal;
+}

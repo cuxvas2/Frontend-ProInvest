@@ -3,9 +3,6 @@
 @{
     ViewData["Title"] = "Dirección";
 }
-<head>
-    <link rel="stylesheet" href="~/css/Formulario.css" asp-append-version="true" />
-</head>
 <div class="row justify-content-md-center">
     @if (ViewBag.Error != null)
     {
@@ -73,9 +70,11 @@
 </div>
 
 
+
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    <script defer src="~/js/direcciones.js" asp-append-version="true"></script>
+    <link rel="stylesheet" href="~/css/Formulario.css" asp-append-version="true" />
+    <script defer src="~/js/direcciones.js"></script>
 }

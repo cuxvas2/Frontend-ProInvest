@@ -29,8 +29,8 @@
                 @Html.DisplayFor(modelItem => item.Rendimiento)
             </td>
             <td>
-                <a asp-action="EditarTipoInversion" asp-route-id="@item.IdTipo">Editar</a> |
-                <a asp-action="EliminarTipoInversion" asp-route-id="@item.IdTipo">Eliminar</a>
+                    <a asp-action="EditarTipoInversion" asp-controller="admin" asp-route-id="@item.IdTipo">Editar</a> |
+                    <a asp-action="EliminarTipoInversion" asp-controller="admin" asp-route-id="@item.IdTipo">Eliminar</a>
             </td>
         </tr>
 }
@@ -38,5 +38,5 @@
 </table>
 
 <div class="container-fluid text-center mt-4">
-    <a asp-action="CrearTipoInversion" class="btn btn-primary">Agregar</a>
+    <a asp-action="CrearTipoInversion" asp-controller="admin" class="btn btn-primary">Agregar</a>
 </div>

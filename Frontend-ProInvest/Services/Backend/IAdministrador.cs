@@ -1,8 +1,6 @@
 ﻿using Frontend_ProInvest.Models;
 using Frontend_ProInvest.Services.Backend.ModelsHelpers;
 using System.Net;
-using Frontend_ProInvest.Models;
-using Microsoft.AspNetCore.Mvc;
 namespace Frontend_ProInvest.Services.Backend;
 
 public interface IAdministrador
@@ -18,4 +16,8 @@ public interface IAdministrador
     public Task<bool> EditarTipoInversionAsync(string token, TipoInversionViewModel inversion);
     public Task<bool> EliminarTipoInversionAsync(string token, int id);
     public Task<OrigenInversionRespuestaJson> ObtenerOrigenesInversion(string token);
+    public Task<IEnumerable<InformacionContrato>> ObtenerContratos(string token);
+    public Task<SolicitudInversionViewModel> ObtenerSolicitudInversion(string token, InformacionContrato contrato);
+    public Task<InformacionContrato> ObtenerInformacionContratoPorFolio(string token, int folio);
+    public Task<IEnumerable<DocumentosExpedienteViewModel>> ObtenerDocumentosExpediente(string token);
 }

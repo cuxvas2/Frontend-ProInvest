@@ -447,5 +447,38 @@ namespace Frontend_ProInvest.Services.Backend
 
             return tipoInversiones;
         }
+        public async Task<bool> SubirContratoInversion(ExpedienteInversionistaViewModel expedienteInversionista, string token)
+        {
+            bool contratoSubido = false;
+            var idInversionista = expedienteInversionista.IdInversionista;
+            var idDocumento = expedienteInversionista.IdDocumento;
+            var requestData = new
+            {
+                nombreArchivo = expedienteInversionista.NombreDocumento,
+                enlaceBucket = expedienteInversionista.EnlaceBucket
+            };
+            StringContent jsonContent = new(JsonSerializer.Serialize(requestData), Encoding.UTF8, "application/json");
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, $"{_configuration["UrlWebAPIInversionista"]}/expedientesInversionistas/{idDocumento}/{idInversionista}")
+            {
+                Content = jsonContent
+            };
+            httpRequestMessage.Headers.Add("token", token);
+            var httpClient = _httpClientFactory.CreateClient();
+            try
+            {
+                var response = await httpClient.SendAsync(httpRequestMessage);
+                if (response.IsSuccessStatusCode)
+                {
+                    contratoSubido = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                throw new Exception("No se pudo agregar su expediente de inversión");
+            }
+            return contratoSubido;
+        }
     }
 }
