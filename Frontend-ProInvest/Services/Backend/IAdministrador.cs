@@ -21,4 +21,5 @@ public interface IAdministrador
     public Task<IEnumerable<InformacionContrato>> ObtenerContratos(string token);
     public Task<SolicitudInversionViewModel> ObtenerSolicitudInversion(string token, InformacionContrato contrato);
     public Task<InformacionContrato> ObtenerInformacionContratoPorFolio(string token, int folio);
+    public Task<IEnumerable<DocumentosExpedienteViewModel>> ObtenerDocumentosExpediente(string token);
 }

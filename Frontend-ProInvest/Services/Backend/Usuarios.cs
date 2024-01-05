@@ -383,5 +383,102 @@ namespace Frontend_ProInvest.Services.Backend
             }
             return contrato;
         }
+        public async Task<ContratoInversionModel> AgregarContratoCompletoContratoInversionAsync(string base64Url, int idInversionista, string token)
+        {
+            ContratoInversionModel contrato = new();
+            var requestData = new
+            {
+                contrato = base64Url
+            };
+            StringContent jsonContent = new(JsonSerializer.Serialize(requestData), Encoding.UTF8, "application/json");
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Put, $"{_configuration["UrlWebAPIInversionista"]}/contratosInversion/contrato/{idInversionista}")
+            {
+                Content = jsonContent
+            };
+            httpRequestMessage.Headers.Add("token", token);
+            var httpClient = _httpClientFactory.CreateClient();
+            try
+            {
+                var response = await httpClient.SendAsync(httpRequestMessage);
+                if(response.IsSuccessStatusCode)
+                {
+                    var respuesta = await response.Content.ReadFromJsonAsync<ContratoInversionRespuestaJson>();
+                    if(respuesta.ContratoActualizado.Count > 1)
+                    {
+                        contrato = respuesta.ContratoActualizado[1];
+                    }
+                }
+                else
+                {
+                    throw new Exception();
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                throw new Exception("No se pudieron guardar los cambios");
+            }
+            return contrato;
+        }
+        public async Task<IEnumerable<TipoInversionViewModel>> ObtenerTiposInversionAsync()
+        {
+            List<TipoInversionViewModel> tiposAux = new();
+            IEnumerable<TipoInversionViewModel> tipoInversiones = tiposAux;
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, $"{_configuration["UrlWebAPIInversionista"]}/tiposInversion");
+            var httpClient = _httpClientFactory.CreateClient();
+
+            try
+            {
+                var response = await httpClient.SendAsync(httpRequestMessage);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    tiposAux = await response.Content.ReadFromJsonAsync<List<TipoInversionViewModel>>();
+                    tipoInversiones = tiposAux;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                throw new Exception("Ocurrió un error al recuperar los tipos de inversión, intente de nuevo más tarde.");
+            }
+
+            return tipoInversiones;
+        }
+        public async Task<bool> SubirContratoInversion(ExpedienteInversionistaViewModel expedienteInversionista, string token)
+        {
+            bool contratoSubido = false;
+            var idInversionista = expedienteInversionista.IdInversionista;
+            var idDocumento = expedienteInversionista.IdDocumento;
+            var requestData = new
+            {
+                nombreArchivo = expedienteInversionista.NombreDocumento,
+                enlaceBucket = expedienteInversionista.EnlaceBucket
+            };
+            StringContent jsonContent = new(JsonSerializer.Serialize(requestData), Encoding.UTF8, "application/json");
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, $"{_configuration["UrlWebAPIInversionista"]}/expedientesInversionistas/{idDocumento}/{idInversionista}")
+            {
+                Content = jsonContent
+            };
+            httpRequestMessage.Headers.Add("token", token);
+            var httpClient = _httpClientFactory.CreateClient();
+            try
+            {
+                var response = await httpClient.SendAsync(httpRequestMessage);
+                if (response.IsSuccessStatusCode)
+                {
+                    contratoSubido = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                throw new Exception("No se pudo agregar su expediente de inversión");
+            }
+            return contratoSubido;
+        }
     }
 }

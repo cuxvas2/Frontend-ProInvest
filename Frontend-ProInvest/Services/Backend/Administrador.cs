@@ -162,7 +162,7 @@ namespace Frontend_ProInvest.Services.Backend
             List<TipoInversionViewModel> usuarios = new();
             IEnumerable<TipoInversionViewModel> tipoInversiones = usuarios;
 
-            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, $"{_configuration["UrlWebAPI"]}/admin/tiposInversion")
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, $"{_configuration["UrlWebAPIAdministrador"]}/tiposInversion")
             {
                 Headers = { { "token", accessToken } }
             };
@@ -419,6 +419,31 @@ namespace Frontend_ProInvest.Services.Backend
             var listaTiposInversion = await ObtenerContratos(token);
             contrato = listaTiposInversion.FirstOrDefault(x => x.FolioInversion == folio);
             return contrato;
+        }
+        public async Task<IEnumerable<DocumentosExpedienteViewModel>> ObtenerDocumentosExpediente(string token)
+        {
+            List<DocumentosExpedienteViewModel> documentos = new();
+            
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, $"{_configuration["UrlWebAPIAdministrador"]}/documentosExpediente")
+            {
+                Headers =  { { "token", token} }
+            };
+            var httpClient = _httpClientFactory.CreateClient();
+            try
+            {
+                var response = await httpClient.SendAsync(httpRequestMessage);
+                if (response.IsSuccessStatusCode)
+                {
+                    documentos = await response.Content.ReadFromJsonAsync<List<DocumentosExpedienteViewModel>>();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw new Exception("No se pudieron recuperar los documentos");
+            }
+            IEnumerable<DocumentosExpedienteViewModel> documentosObtenidos = documentos;
+            return documentosObtenidos;
         }
     }
 }
