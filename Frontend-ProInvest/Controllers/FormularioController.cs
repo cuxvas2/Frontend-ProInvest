@@ -664,7 +664,8 @@ namespace Frontend_ProInvest.Controllers
         }
         private string ObtenerDireccionIp()
         {
-            return HttpContext.Connection.RemoteIpAddress.ToString();
+            //return HttpContext.Connection.RemoteIpAddress.ToString();
+            return "otro";
         }
     }
 }
