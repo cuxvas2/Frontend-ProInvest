@@ -20,4 +20,10 @@ public interface IAdministrador
     public Task<SolicitudInversionViewModel> ObtenerSolicitudInversion(string token, InformacionContrato contrato);
     public Task<InformacionContrato> ObtenerInformacionContratoPorFolio(string token, int folio);
     public Task<IEnumerable<DocumentosExpedienteViewModel>> ObtenerDocumentosExpediente(string token);
+    public Task<HttpStatusCode> RegistrarOrigenInversion(string origenInversion, string token);
+    public Task<HttpStatusCode> EditarOrigenInversion(OrigenInversionViewModel origenEditado, string token);
+    public Task<HttpStatusCode> EliminarOrigenInversion(int idOrigenInversion, string token);
+    public Task<HttpStatusCode> RegistrarDocumento(string documentoExpediente, string token);
+    public Task<HttpStatusCode> EditarDocumento(DocumentosExpedienteViewModel documentoExpediente, string token);
+    public Task<HttpStatusCode> EliminarDocumento(int idDocumento, string token);
 }

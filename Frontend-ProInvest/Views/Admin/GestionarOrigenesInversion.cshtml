@@ -1,0 +1,100 @@
+﻿@model IEnumerable<Frontend_ProInvest.Models.OrigenInversionViewModel>
+@{
+    ViewData["Title"] = "Gestionar Origenes de Inversion";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<head>
+    <script defer src="~/js/administrarOrigenesInversion.js"></script>
+</head>
+<h1>Gestionar Origenes de Inversión</h1>
+
+<div class="table-responsive">
+    <table class="table table-hover table-bordered table-striped">
+        <thead class="thkead-dar">
+            <tr>
+                <th class="text-center">
+                    Nombre
+                </th>
+                <th class="text-center">
+                    Editar
+                </th>
+                <th class="text-center">
+                    Eliminar
+                </th>
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+            @foreach (var item in Model)
+            {
+                <tr data-origen-id="@item.IdOrigen" data-origen-nombre="@item.NombreOrigen">
+                    <td class="text-center">
+                        @Html.DisplayFor(modelItem => item.NombreOrigen)
+                    </td>
+                    <td class="text-center">
+                        <a title="Editar" id="iconoEditar" data-bs-toggle="modal" data-bs-target="#modalEditar"
+                            class="submit"><i class="bi bi-pencil-fill"></i></a>
+                    </td>
+                    <td class="text-center">
+                        <a title="Eliminar" id="iconoEliminar" data-bs-toggle="modal" data-bs-target="#modalEliminar"
+                            class="submit"><i class="bi bi-trash-fill"></i></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@if (!String.IsNullOrEmpty(ViewBag.Error))
+{
+    <div class="col-mb-6">
+        <div class="alert alert-danger d-flex flex-row mb-3">
+            @ViewBag.Error
+            <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
+
+}
+<div class="modal fade" id="modalAgregar" tabindex="-1" aria-labelledby="modalAgregarLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalAgregarLabel">Agregar Origen de Inversion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="contenedorAgregar"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalEditar" tabindex="-1" aria-labelledby="modalEditarLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEditarLabel">Editar Origen de Inversion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="contenedorEditar"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalEliminar" tabindex="-1" aria-labelledby="modalEliminarLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEliminarLabel">Eliminar Origen de Inversion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="contenedorEliminar"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid text-end mt-4">
+    <a title="Agregar" id="iconoAgregar" data-bs-toggle="modal" data-bs-target="#modalAgregar" class="submit"><i
+            class="bi bi-plus-circle-fill"></i></a>
+</div>

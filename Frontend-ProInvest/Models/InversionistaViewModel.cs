@@ -36,7 +36,7 @@ namespace Frontend_ProInvest.Models
         public DateTime FechaNacimiento { get; set; }
 
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
-        [RegularExpression(@"^(?!.*[&<>']).{12}$", ErrorMessage = "El RFC debe incluir 12 caracteres sin incluir caracteres especiales.")]
+        [RegularExpression(@"^(?!.*[&<>']).{13}$", ErrorMessage = "El RFC debe incluir 13 caracteres sin incluir caracteres especiales.")]
         [Display(Name = "RFC*")]
         public string Rfc {  get; set; }
 
