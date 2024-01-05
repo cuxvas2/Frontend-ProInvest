@@ -66,7 +66,9 @@ var chart = new ApexCharts(document.querySelector(".chart"), options);
 chart.render();
 
 function calcularInversion(rendimiento, rendimientoAnterior) {
-    return rendimientoAnterior * rendimiento;
+    rendimiento = parseFloat(rendimiento); 
+    rendimientoAnterior = parseFloat(rendimientoAnterior);
+    return rendimientoAnterior + (rendimientoAnterior * rendimiento);
 }
 
 
@@ -90,7 +92,8 @@ function actualizarGrafica() {
     if ($(form).valid()) {
         var anios = slider.value;
         var importe = importeInput.value;
-        var rendimiento = tiposInversionSelector.value;
+        var rendimiento1 = tiposInversionSelector.value;
+        var rendimiento = rendimiento1 / 100;
         var rendimientoAnterior = importe;
         var datos = [];
         var tuInversion = [];

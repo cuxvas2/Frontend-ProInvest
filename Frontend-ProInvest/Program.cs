@@ -14,6 +14,7 @@ builder.Services.AddSession(options =>
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<IUsuarios, Usuarios>();
 builder.Services.AddScoped<IAdministrador, Administrador>();
+builder.Services.AddScoped<IAmazonS3, AmazonS3>();
 
 
 var app = builder.Build();

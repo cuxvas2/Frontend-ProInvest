@@ -1,4 +1,5 @@
 ﻿const canvas = document.querySelector('canvas');
+const botonEnviar = document.getElementById('boton-enviar');
 const botonLimpiar = document.querySelector('.boton-limpiar');
 //contexto del canvas para dibujar en 2d
 const ctx = canvas.getContext('2d');
@@ -27,11 +28,26 @@ window.obtenerImagen = () => {
 };
 
 ////impresion de contrato con su firma
-//botonContrato.addEventListener('click', (e) => {
-//    e.preventDefault();
-
-//    const ventana = window.open('contrato.html');
+//botonEnviar.addEventListener('click', (e) => {
+//    const url = canvas.toDataURL();
+//    const ventana = window.open('ContratoDeInversion');
 //});
+
+
+botonEnviar.addEventListener('click', async function () {
+    const urlImagen = canvas.toDataURL();
+    try {
+        var result = await $.ajax({
+            url: '/Formulario/EnviarFirma',
+            type: 'POST',
+            data: { base64url: urlImagen }
+        });
+    } catch (error) {
+        alert('Ocurrió un error al guardar la firma. Por favor, inténtalo de nuevo.');
+    }
+});
+
+
 
 const obtenerPosicionCursor = (e) => {
     positionX = e.clientX - e.target.getBoundingClientRect().left;
