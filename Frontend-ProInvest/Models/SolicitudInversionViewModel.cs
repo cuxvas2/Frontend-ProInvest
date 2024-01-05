@@ -1,13 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Frontend_ProInvest.Services.Backend.ModelsHelpers;
+using System.ComponentModel.DataAnnotations;
+using System.Net;
 
 namespace Frontend_ProInvest.Models
 {
     public class SolicitudInversionViewModel
     {
-        [Display(Name = "Folio")]
-        public int FolioInversion { get; set; }
-        [Display(Name = "Nombre")]
-        public string NombreCompleto { get; set; }
-        public string Estado { get; set; }
+        public HttpStatusCode CodigoSolicitud { get; set; }
+
+        public InversionistaViewModel Inversionista { get; set; }
+        public InformacionBancariaViewModel InformacionBancaria { get; set; }
+        public InformacionContrato InformacionContrato { get; set; }
+        /* Agregar un objeto de Documentos expedientes */
     }
 }
