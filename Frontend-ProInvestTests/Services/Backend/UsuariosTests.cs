@@ -266,5 +266,12 @@ namespace Frontend_ProInvest.Services.Backend.Tests
             var contratoActualizado = await _usuarios.AgregarContratoCompletoContratoInversionAsync(base64Url, inversionistaObtenido.IdInversionista, inversionistaObtenido.Token);
             Assert.AreEqual(base64Url, contratoActualizado.Contrato);
         }
+
+        [TestMethod()]
+        public async Task ObtenerTiposInversionAsyncTest()
+        {
+            var obtenido = await _usuarios.ObtenerTiposInversionAsync();
+            Assert.IsTrue(obtenido.Count() > 0);
+        }
     }
 }

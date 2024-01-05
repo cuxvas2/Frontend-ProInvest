@@ -421,5 +421,31 @@ namespace Frontend_ProInvest.Services.Backend
             }
             return contrato;
         }
+        public async Task<IEnumerable<TipoInversionViewModel>> ObtenerTiposInversionAsync()
+        {
+            List<TipoInversionViewModel> tiposAux = new();
+            IEnumerable<TipoInversionViewModel> tipoInversiones = tiposAux;
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, $"{_configuration["UrlWebAPIInversionista"]}/tiposInversion");
+            var httpClient = _httpClientFactory.CreateClient();
+
+            try
+            {
+                var response = await httpClient.SendAsync(httpRequestMessage);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    tiposAux = await response.Content.ReadFromJsonAsync<List<TipoInversionViewModel>>();
+                    tipoInversiones = tiposAux;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                throw new Exception("Ocurrió un error al recuperar los tipos de inversión, intente de nuevo más tarde.");
+            }
+
+            return tipoInversiones;
+        }
     }
 }
