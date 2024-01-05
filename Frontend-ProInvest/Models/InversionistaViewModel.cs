@@ -87,6 +87,11 @@ namespace Frontend_ProInvest.Models
         public string Municipio { get; set; }
         public string Token { get; set; }
 
+        public string NombreCompleto 
+        { 
+            get { return Nombre + " " + ApellidoPaterno + " " + ApellidoMaterno; }
+        }
+
         public string ToString()
         {
             return "CP: " + CodigoPostal + ", Colonia: " + Colonia + ", Municipio: " +

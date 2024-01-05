@@ -94,7 +94,7 @@ namespace Frontend_ProInvest.Controllers
                     };
 
                     Response.Cookies.Append("tokenAdministrador", credencialesObtenidas.Token, cookieOptions);
-                    return Redirect("/admin/bancos");
+                    return Redirect("/admin/menu");
                 }
                 else
                 {
@@ -205,27 +205,15 @@ namespace Frontend_ProInvest.Controllers
                 return encriptedPassword.ToString().ToUpper();
             }
         }
-
-        public IActionResult SolicitudesInversiones()
+        [HttpGet]
+        public async Task<IActionResult> SolicitudesInversiones()
         {
-            SolicitudInversionViewModel solicitud = new SolicitudInversionViewModel();
-            solicitud.FolioInversion = 3354;
-            solicitud.NombreCompleto = "Victor Augusto Cuevas Barradas";
-            solicitud.Estado = "En espera";
-
-
-            SolicitudInversionViewModel solicitud2 = new SolicitudInversionViewModel();
-            solicitud2.FolioInversion = 2144;
-            solicitud2.NombreCompleto = "Alondra Cuevas Barradas";
-            solicitud2.Estado = "En espera";
-
-
-            List<SolicitudInversionViewModel> lista = new List<SolicitudInversionViewModel> { solicitud, solicitud2 };
-            IEnumerable<SolicitudInversionViewModel> listaSolicitudes = lista;
-
-            return View(listaSolicitudes);
+            string token = HttpContext.Request.Cookies["tokenAdministrador"];
+            var listacontratos = await _administrador.ObtenerContratos(token);
+            return View(listacontratos);
         }
 
+        [HttpGet]
         public async Task<IActionResult> AdministrarTiposDeInversion()
         {
 
@@ -234,6 +222,19 @@ namespace Frontend_ProInvest.Controllers
             return View(listaTipoInversiones);
         }
 
+        public async Task<IActionResult> DetallesDeSolicitudDeInversiones(int folio)
+        {
+            if (folio == 0)
+            {
+                return NotFound();
+            }
+            string token = HttpContext.Request.Cookies["tokenAdministrador"];
+            var contrato = await _administrador.ObtenerInformacionContratoPorFolio(token, folio);
+            var solicitudInversion = await _administrador.ObtenerSolicitudInversion(token, contrato);
+            return View(solicitudInversion);
+        }
+
+        [HttpGet]
         public IActionResult CrearTipoInversion()
         {
             return View();
@@ -253,7 +254,7 @@ namespace Frontend_ProInvest.Controllers
             }
             return View(tipoInversion);
         }
-
+        [HttpGet]
         public async Task<IActionResult> EditarTipoInversion(int id)
         {
             if (id == null)
@@ -293,7 +294,7 @@ namespace Frontend_ProInvest.Controllers
             }
             return View(tipoInversion);
         }
-
+        [HttpGet]
         public async Task<IActionResult> EliminarTipoInversion(int id)
         {
             if (id == null)
