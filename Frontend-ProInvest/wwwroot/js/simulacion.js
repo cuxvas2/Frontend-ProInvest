@@ -162,7 +162,7 @@ function actulizarGraficaComparativa() {
         const seccionComparacion = document.getElementById("tiposDropdown");
         seccionComparacion.appendChild(labelElement);
     }
-    if ($(formComparacion).valid()) {
+    else if ($(formComparacion).valid()) {
         var anios = sliderComparacion.value;
         var importe = importeInputComparacion.value;
         var rendimientosTotales = [];
