@@ -1,0 +1,14 @@
+﻿@model Frontend_ProInvest.Models.OrigenInversionViewModel
+@{
+    Layout = null;
+}
+<form asp-action="EditarOrigenInversionPost" asp-controller="admin" method="post" asp-route-id="@Model.IdOrigen">
+    <div class="form-group">
+        <label for="NombreOrigen">Nombre</label>
+        <input type="text" class="form-control" id="Nombre" asp-for="NombreOrigen" value="@Model.NombreOrigen" required>
+    </div>
+    <div class="container-fluid text-end mt-4">
+        <button type="submit" class="btn btn-primary">Agregar</button>
+    </div>
+
+</form>

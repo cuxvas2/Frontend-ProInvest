@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "SolicitudesInversiones";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
 <h2 class="text-center mb-4"> Solicitudes de inversión </h2>
@@ -52,7 +52,7 @@
                             @Html.DisplayFor(modelItem => item.Importe)
                         </td>
                         <td>
-                            <a asp-action="DetallesDeSolicitudDeInversiones" asp-route-id="@item.IdInversionista" asp-controller="admin" >Detalles</a>
+                            <a asp-controller="admin" asp-action="DetallesDeSolicitudDeInversiones" asp-route-folio="@item.FolioInversion">Detalles</a>
                         </td>
                     </tr>
                 }

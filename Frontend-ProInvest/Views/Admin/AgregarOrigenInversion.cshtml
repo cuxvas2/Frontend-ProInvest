@@ -1,0 +1,15 @@
+﻿@model Frontend_ProInvest.Models.OrigenInversionViewModel
+@{
+    Layout = null;
+}
+<form id="formOrigenInversion" asp-action="AgregarOrigenInversionPost" asp-controller="admin" method="post">
+    <div class="form-group">
+        <label asp-for="NombreOrigen"></label>
+        <input type="text" class="form-control" id="Nombre" asp-for="NombreOrigen" required>
+        <span asp-validation-for="NombreOrigen" class="text-danger"></span>
+    </div>
+    <div class="container-fluid text-end mt-4">
+        <button type="submit" class="btn btn-primary">Agregar</button>
+    </div>
+
+</form>

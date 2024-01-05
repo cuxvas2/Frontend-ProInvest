@@ -549,7 +549,7 @@ namespace Frontend_ProInvest.Controllers
                         ModelState.AddModelError("AceptaContrato", "Debe aceptar el Contrato de inversión para continuar.");
                     }
                 }
-                if (!ModelState.IsValid)
+                if (ModelState.IsValid)
                 {
                     string token = Request.Cookies["Token"];
                     int folioInversion = Int32.Parse(Request.Cookies["FolioInversion"]);
