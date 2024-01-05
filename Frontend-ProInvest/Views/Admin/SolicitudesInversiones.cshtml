@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Frontend_ProInvest.Models.SolicitudInversionViewModel>
+﻿@model IEnumerable<Frontend_ProInvest.Services.Backend.ModelsHelpers.InformacionContrato>
 
 @{
     ViewData["Title"] = "SolicitudesInversiones";
@@ -17,10 +17,18 @@
                         @Html.DisplayNameFor(model => model.FolioInversion)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.NombreCompleto)
+                        @Html.DisplayNameFor(model => model.IdInversionista)
                     </th>
                     <th>
                         @Html.DisplayNameFor(model => model.Estado)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.UltimaActualizacion)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Importe)
+                    </th>
+                    <th>
                     </th>
                 </tr>
             </thead>
@@ -32,10 +40,19 @@
                             @Html.DisplayFor(modelItem => item.FolioInversion)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.NombreCompleto)
+                            @Html.DisplayFor(modelItem => item.IdInversionista)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.Estado)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.UltimaActualizacion)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Importe)
+                        </td>
+                        <td>
+                            <a asp-action="DetallesDeSolicitudDeInversiones" asp-route-id="@item.IdInversionista" asp-controller="admin" >Detalles</a>
                         </td>
                     </tr>
                 }
@@ -46,7 +63,7 @@
 else
 {
     <div class="text-center text-black-50">
-        No se pudo conectar al servidor, intentalo mas tarde. 
+        No se pudo conectar al servidor, intentalo mas tarde.
     </div>
 }
 

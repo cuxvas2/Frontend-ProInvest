@@ -6,6 +6,7 @@ using Microsoft.Net.Http.Headers;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
+using System.Diagnostics.Contracts;
 
 namespace Frontend_ProInvest.Services.Backend
 {
@@ -198,7 +199,7 @@ namespace Frontend_ProInvest.Services.Backend
                 }),
                 Encoding.UTF8,
                 "application/json");
-            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, $"{_configuration["UrlWebAPI"]}/admin/tiposInversion")
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, $"{_configuration["UrlWebAPIAdministrador"]}/tiposInversion")
             {
                 Content = jsonContent,
                 Headers = { { "token", accessToken } }
@@ -246,7 +247,7 @@ namespace Frontend_ProInvest.Services.Backend
                 Encoding.UTF8,
                 "application/json");
 
-            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Put, $"{_configuration["UrlWebAPI"]}/admin/tiposInversion/{inversion.IdTipo}")
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Put, $"{_configuration["UrlWebAPIAdministrador"]}/tiposInversion/{inversion.IdTipo}")
             {
                 Content = jsonContent,
                 Headers = { { "token", accessToken } }
@@ -275,7 +276,7 @@ namespace Frontend_ProInvest.Services.Backend
         {
             bool eliminacionExitosa = false;
 
-            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Delete, $"{_configuration["UrlWebAPI"]}/admin/tiposInversion/{id}")
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Delete, $"{_configuration["UrlWebAPIAdministrador"]}/admin/tiposInversion/{id}")
             {
                 Headers = { { "token", accessToken } }
             };
@@ -321,6 +322,103 @@ namespace Frontend_ProInvest.Services.Backend
                 throw new Exception("No se pudieron recuperar los origenes de inversi�n");
             }
             return origenesInversion;
+        }
+
+        public async Task<IEnumerable<InformacionContrato>> ObtenerContratos(string token)
+        {
+            List<InformacionContrato> contratos = new();
+
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, $"{_configuration["UrlWebAPIAdministrador"]}/contratosInversion")
+            {
+                Headers = { { "token", token } }
+            };
+
+            var httpClient = _httpClientFactory.CreateClient();
+
+            try
+            {
+                var response = await httpClient.SendAsync(httpRequestMessage);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    contratos = await response.Content.ReadFromJsonAsync<List<InformacionContrato>>();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("No se pudieron recuperar los bancos");
+            }
+            IEnumerable<InformacionContrato> contratosObtenidos = contratos;
+            return contratosObtenidos;
+        }
+
+        public async Task<SolicitudInversionViewModel> ObtenerSolicitudInversion(string token, InformacionContrato contrato)
+        {
+            SolicitudInversionViewModel solicitud = new();
+
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, $"{_configuration["UrlWebAPIAdministrador"]}/inversionistas")
+            {
+                Headers = { { "token", token } }
+            };
+
+            var httpClient = _httpClientFactory.CreateClient();
+
+            try
+            {
+                var response = await httpClient.SendAsync(httpRequestMessage);
+                solicitud.CodigoSolicitud = response.StatusCode;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    List<InversionistaViewModel> Listainversionista = new();
+                    Listainversionista = await response.Content.ReadFromJsonAsync<List<InversionistaViewModel>>();
+                    solicitud.Inversionista = Listainversionista.FirstOrDefault(x => x.IdInversionista == contrato.IdInversionista);
+                }
+                solicitud.InformacionBancaria = await ObtenerInformacionBancariaConFolioInversion(token, contrato.FolioInversion);
+                //Teminar de obtener los origenes y agregar los documentos
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("No se pudieron recuperar los bancos");
+            }
+
+            return solicitud;
+        }
+
+        private async Task<InformacionBancariaViewModel> ObtenerInformacionBancariaConFolioInversion(string token, int folioInversion)
+        {
+            InformacionBancariaViewModel solicitud = new();
+
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, $"{_configuration["UrlWebAPIAdministrador"]}/informacionBancaria{folioInversion}")
+            {
+                Headers = { { "token", token } }
+            };
+
+            var httpClient = _httpClientFactory.CreateClient();
+
+            try
+            {
+                var response = await httpClient.SendAsync(httpRequestMessage);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    solicitud = await response.Content.ReadFromJsonAsync<InformacionBancariaViewModel>();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("No se pudieron recuperar los bancos");
+            }
+
+            return solicitud;
+        }
+
+        public async Task<InformacionContrato> ObtenerInformacionContratoPorFolio(string token, int folio)
+        {
+            InformacionContrato contrato = new();
+            var listaTiposInversion = await ObtenerContratos(token);
+            contrato = listaTiposInversion.FirstOrDefault(x => x.FolioInversion == folio);
+            return contrato;
         }
         public async Task<IEnumerable<DocumentosExpedienteViewModel>> ObtenerDocumentosExpediente(string token)
         {

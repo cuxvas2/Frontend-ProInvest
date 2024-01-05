@@ -16,9 +16,6 @@ builder.Services.AddScoped<IUsuarios, Usuarios>();
 builder.Services.AddScoped<IAdministrador, Administrador>();
 builder.Services.AddScoped<IAmazonS3, AmazonS3>();
 
-//Soporte para consultar el API
-builder.Services.AddHttpClient();
-builder.Services.AddScoped<IAdministrador, Administrador>();
 
 var app = builder.Build();
 
@@ -62,7 +59,13 @@ app.MapControllerRoute(
 
 app.Use(async (context, next) =>
 {
-    if (!context.Request.Path.Value.StartsWith("/admin"))
+    bool admin = false;
+    if(context.Request.Path.Value.StartsWith("/admin") || context.Request.Path.Value.StartsWith("/Admin"))
+    {
+        admin = true;
+    }
+
+    if (!admin)
     {
         var cookieOptions = new CookieOptions
         {
