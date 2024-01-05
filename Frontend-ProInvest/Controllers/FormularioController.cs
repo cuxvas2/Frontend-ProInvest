@@ -46,7 +46,6 @@ namespace Frontend_ProInvest.Controllers
                             return RedirectToAction("InformacionBancaria");
                         case "EXPEDIENTE":
                             return RedirectToAction("Expediente");
-                            break;
                     }
                 }
             }
@@ -72,7 +71,6 @@ namespace Frontend_ProInvest.Controllers
                     var contrato = await _usuarios.CrearContratoInversionAsync(direccionIp, resultado.IdInversionista, DateTime.UtcNow);
                     if (resultado?.Token != null && contrato.InformacionContrato != null)
                     {
-                        //enviar sms
                         var correoEnviado = await _usuarios.EnviarCorreoVerificacion(resultado.IdInversionista, (int)contrato.InformacionContrato.FolioInversion, resultado.Token);
                         var cookieOptions = new CookieOptions
                         {
@@ -115,7 +113,6 @@ namespace Frontend_ProInvest.Controllers
                             return RedirectToAction("InformacionBancaria");
                         case "EXPEDIENTE":
                             return RedirectToAction("Expediente");
-                            break;
                     }
                     var cookieOptions = new CookieOptions
                     {
@@ -141,6 +138,10 @@ namespace Frontend_ProInvest.Controllers
                         }
                     }
                 }
+                else
+                {
+                    return RedirectToAction("DatosPersonales");
+                }
             }
             catch (Exception)
             {
@@ -149,55 +150,6 @@ namespace Frontend_ProInvest.Controllers
             }
             return View("VerificacionDatosContacto");
         }
-        /* [HttpPost]
-         public async Task<IActionResult> VerificacionDatosContacto(string codigo, string BtnPrevious, string BtnNext)
-         {
-             if (BtnNext != null)
-             {
-                 try
-                 {
-                     //Comparar con el código que se envió
-                     //verificar SMS añadirVerificacionSMS
-                     //if (verificacionCorrecta)
-                     //{
-                     //ViewBag.ExitoVerificacionSms = "Se ha verificado correctamente el número de celular."
-                     var direccionIp = ObtenerDireccionIp();
-                     var solicitudExistente = await _usuarios.ObtenerContratoInversionPorIpAsync(direccionIp);
-                         Token = solicitudExistente.Token;
-                         if (solicitudExistente?.InformacionContrato != null)
-                         {
-                             if (solicitudExistente.InformacionContrato.CorreoVerificacion == true)
-                             {
-                                 ViewBag.CorreoVerificacion = true;
-                                 var estadoCambiado = await _usuarios.EditarEstadoUltimaActualizacionContratoInversionAsync(IdInversionista, "FINANCIERO", DateTime.UtcNow, Token);
-                                 if (estadoCambiado)
-                                 {
-                                     return RedirectToAction("InformacionBancaria");
-                                 }
-                                 else
-                                 {
-                                     ViewBag.Error = "No se pudo guardar el proceso de tu solicitud. Intente de nuevo más tarde";
-                                 }
-                             }
-                             else
-                             {
-                                 ViewBag.Error = "Debes verificar tu correo electrónico para continuar";
-                             }
-                         }
-                     //}
-                     //else
-                     //{
-                     //  ViewBag.Error = "Ocurrió un error al verificar tu cuenta, por favor intenta de nuevo.";
-                     //}
-                 }
-                 catch (Exception)
-                 {
-                     ViewBag.Error = "Ocurrió un error al verificar tu cuenta, por favor intenta de nuevo.";
-                 }
-             }
-             return View();
-         }
-        */
         [HttpPost]
         public async Task<IActionResult> CorreoVerificado(string BtnContinuar)
         {
@@ -288,8 +240,11 @@ namespace Frontend_ProInvest.Controllers
                             return RedirectToAction("InformacionBancaria");
                         case "EXPEDIENTE":
                             return RedirectToAction("Expediente");
-                            break;
                     }
+                }
+                else
+                {
+                    return RedirectToAction("DatosPersonales");
                 }
             }
             catch (Exception)
@@ -330,6 +285,162 @@ namespace Frontend_ProInvest.Controllers
             }
             return View();
         }
+        public async Task<ActionResult> InformacionBancaria()
+        {
+            try
+            {
+                var direccionIp = ObtenerDireccionIp();
+                var solicitudExistente = await _usuarios.ObtenerContratoInversionPorIpAsync(direccionIp);
+                if (solicitudExistente?.InformacionContrato != null)
+                {
+                    var cookieOptions = new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                        SameSite = SameSiteMode.None,
+                        Path = "/Formulario",
+                    };
+                    Response.Cookies.Append("Token", solicitudExistente.Token, cookieOptions);
+                    Console.WriteLine("\nToken generado en contrato: " + solicitudExistente.Token);
+                    Response.Cookies.Append("FolioInversion", solicitudExistente.InformacionContrato.FolioInversion.ToString(), cookieOptions);
+                    Response.Cookies.Append("IdInversionista", solicitudExistente.InformacionContrato.IdInversionista.ToString(), cookieOptions);
+                    string estado = solicitudExistente.InformacionContrato.Estado;
+                    switch (estado)
+                    {
+                        case "VERIFICACION":
+                            return RedirectToAction("VerificacionDatosContacto");
+                        case "DOMICILIO":
+                            return RedirectToAction("Direccion");
+                        case "EXPEDIENTE":
+                            return RedirectToAction("Expediente");
+                    }
+                }
+                else
+                {
+                    return RedirectToAction("DatosPersonales");
+                }
+                var token = Request.Cookies["Token"];
+                var origenesToken = await _administrador.ObtenerOrigenesInversion(token);
+                if (origenesToken.Token != null)
+                {
+                    var cookieOptions = new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                        SameSite = SameSiteMode.None,
+                        Path = "/Formulario",
+                    };
+                    Response.Cookies.Append("Token", solicitudExistente.Token, cookieOptions);
+                    if (origenesToken?.OrigenesInversion != null)
+                    {
+                        string origenesJson = JsonConvert.SerializeObject(origenesToken.OrigenesInversion);
+                        TempData["OrigenesInversion"] = origenesJson;
+                        SelectList selectList = new(origenesToken.OrigenesInversion, "IdOrigen", "NombreOrigen");
+                        ViewBag.OrigenesInversion = selectList;
+                    }
+                    else
+                    {
+                        ViewBag.Error = "No se pudieron recuperar los origenes de inversión";
+                    }
+                }
+                token = Request.Cookies["Token"];
+                var bancos = await _administrador.ObtenerBancos(token);
+                if (bancos?.Count() > 0)
+                {
+                    string bancosJson = JsonConvert.SerializeObject(bancos);
+                    TempData["Bancos"] = bancosJson;
+                    SelectList selectList = new(bancos, "IdBanco", "Banco");
+                    ViewBag.Bancos = selectList;
+                }
+                else
+                {
+                    ViewBag.Error = "No se pudieron recuperar los bancos";
+                }
+                var tiposInversion = await _administrador.GetTiposInversionAsync(token);
+                if (tiposInversion?.Count() > 0)
+                {
+                    string tiposInversionJson = JsonConvert.SerializeObject(tiposInversion);
+                    TempData["TiposInversion"] = tiposInversionJson;
+                    SelectList selectList = new(tiposInversion, "IdTipo", "Nombre");
+                    ViewBag.TiposInversion = selectList;
+                }
+                else
+                {
+                    ViewBag.Error = "No se pudieron recuperar los tipos de inversión";
+                }
+            }
+            catch (Exception)
+            {
+                ViewBag.Error = "No se pudo recuperar el proceso de su solicitud. Intente de nuevo más tarde";
+                return RedirectToAction("DatosPersonales");
+            }
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> InformacionBancaria(InformacionBancariaViewModel modelo, string BtnPrevious, string BtnNext)
+        {
+            if (BtnNext != null)
+            {
+                if (ModelState.IsValid)
+                {
+                    if (modelo.OrigenLicito == false)
+                    {
+                        ModelState.AddModelError("OrigenLicito", "Debe aceptar el Acuerdo de Origen de Fondos para continuar.");
+                    }
+                    if (modelo.AceptaContrato == false)
+                    {
+                        ModelState.AddModelError("AceptaContrato", "Debe aceptar el Contrato de inversión para continuar.");
+                    }
+                }
+                if (ModelState.IsValid)
+                {
+                    string token = Request.Cookies["Token"];
+                    int folioInversion = Int32.Parse(Request.Cookies["FolioInversion"]);
+                    int idInversionista = Int32.Parse(Request.Cookies["IdInversionista"]);
+                    try
+                    {
+                        modelo.IdBanco = Int32.Parse(modelo.Banco);
+                        modelo.IdTipo = Int32.Parse(modelo.TipoDeInversion);
+                        modelo.IdOrigen = Int32.Parse(modelo.OrigenDeFondos);
+
+                        var informacionBancaria = await _usuarios.CrearInformacionBancaria(modelo, folioInversion, token);
+                        var contratoActualizado = await _usuarios.EditarInversionContratoInversion(modelo, idInversionista, token);
+                        if (informacionBancaria && contratoActualizado != null)
+                        {
+                            var estadoCambiado = await _usuarios.EditarEstadoUltimaActualizacionContratoInversionAsync(idInversionista, "EXPEDIENTE", DateTime.UtcNow, token);
+                            if (estadoCambiado)
+                            {
+                                return RedirectToAction("Expediente");
+                            }
+                        }
+                        throw new Exception();
+                    }
+                    catch (Exception)
+                    {
+                        ViewBag.Error = "No se pudo guardar el proceso de tu solicitud. Intente de nuevo más tarde";
+                    }
+                }
+            }
+            string bancosJson = TempData["Bancos"] as string;
+            TempData["Bancos"] = bancosJson;
+            IEnumerable<BancosViewModel> bancos = JsonConvert.DeserializeObject<IEnumerable<BancosViewModel>>(bancosJson);
+            SelectList selectList = new(bancos, "IdBanco", "Banco");
+            ViewBag.Bancos = selectList;
+
+            string origenesJson = TempData["OrigenesInversion"] as string;
+            TempData["OrigenesInversion"] = origenesJson;
+            IEnumerable<OrigenInversionViewModel> origenes = JsonConvert.DeserializeObject<IEnumerable<OrigenInversionViewModel>>(origenesJson);
+            selectList = new(origenes, "IdOrigen", "NombreOrigen");
+            ViewBag.OrigenesInversion = selectList;
+
+            string tiposInversionJson = TempData["TiposInversion"] as string;
+            TempData["TiposInversion"] = tiposInversionJson;
+            IEnumerable<TipoInversionViewModel> tiposInversion = JsonConvert.DeserializeObject<IEnumerable<TipoInversionViewModel>>(tiposInversionJson);
+            selectList = new(tiposInversion, "IdTipo", "Nombre");
+            ViewBag.TiposInversion = selectList;
+            return View(modelo);
+        }
         public async Task<IActionResult> Expediente()
         {
             try
@@ -347,6 +458,7 @@ namespace Frontend_ProInvest.Controllers
                     };
                     Response.Cookies.Append("Token", solicitudExistente.Token, cookieOptions);
                     Response.Cookies.Append("IdInversionista", solicitudExistente.InformacionContrato.IdInversionista.ToString(), cookieOptions);
+                    Response.Cookies.Append("FolioContrato", solicitudExistente.InformacionContrato.FolioInversion.ToString(), cookieOptions);
                     string estado = solicitudExistente.InformacionContrato.Estado;
                     switch (estado)
                     {
@@ -357,6 +469,10 @@ namespace Frontend_ProInvest.Controllers
                         case "FINANCIERO":
                             return RedirectToAction("InformacionBancaria");
                     }
+                }
+                else
+                {
+                    return RedirectToAction("DatosPersonales");
                 }
             }
             catch (Exception)
@@ -433,7 +549,18 @@ namespace Frontend_ProInvest.Controllers
                 }
                 else
                 {
-                    ViewBag.Error = "Subido correctamente";
+                    var folioInversion = Request.Cookies["FolioContrato"];
+                    try
+                    {
+                        var contrato = await _usuarios.ObtenerContratoPorFolioInversion(Int32.Parse(folioInversion));
+                        ViewBag.Folio = contrato.InformacionContrato.FolioInversion;
+                        ViewBag.Firma = contrato.InformacionContrato.Contrato;
+                        return View("Finalizado");
+                    }
+                    catch(Exception)
+                    {
+                    }
+                    
                 }
             }
             var listaDocumentos = await _administrador.ObtenerDocumentosExpediente(token);
@@ -607,7 +734,7 @@ namespace Frontend_ProInvest.Controllers
                 var coloniasView = await _usuarios.GetColoniasPorCodigoPostalAsync(direccionIp, codigoPostal);
                 return Json(new { colonias = coloniasView });
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 return Json(new { error = ex.Message });
             }
@@ -629,7 +756,7 @@ namespace Frontend_ProInvest.Controllers
                     return Json(new { exito = true });
                 }
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 return Json(new { error = ex.Message });
             }
