@@ -346,7 +346,6 @@ namespace Frontend_ProInvest.Services.Backend
             }
             catch (Exception ex)
             {
-                throw new Exception("No se pudieron recuperar los bancos");
             }
             IEnumerable<InformacionContrato> contratosObtenidos = contratos;
             return contratosObtenidos;
@@ -375,7 +374,8 @@ namespace Frontend_ProInvest.Services.Backend
                     solicitud.Inversionista = Listainversionista.FirstOrDefault(x => x.IdInversionista == contrato.IdInversionista);
                 }
                 solicitud.InformacionBancaria = await ObtenerInformacionBancariaConFolioInversion(token, contrato.FolioInversion);
-                //Teminar de obtener los origenes y agregar los documentos
+                solicitud.Documentos = await ObtenerNombresDocumentosExpediente(token);
+                //Teminar de obtener los origenes
             }
             catch (Exception ex)
             {
@@ -383,6 +383,34 @@ namespace Frontend_ProInvest.Services.Backend
             }
 
             return solicitud;
+        }
+
+        private async Task<List<DocumentosExpediente>> ObtenerNombresDocumentosExpediente (string token)
+        {
+            List<DocumentosExpediente> solicitudes = new();
+
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, $"{_configuration["UrlWebAPIAdministrador"]}/documentosExpediente")
+            {
+                Headers = { { "token", token } }
+            };
+
+            var httpClient = _httpClientFactory.CreateClient();
+
+            try
+            {
+                var response = await httpClient.SendAsync(httpRequestMessage);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    solicitudes = await response.Content.ReadFromJsonAsync<List<DocumentosExpediente>>();
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return solicitudes;
         }
 
         private async Task<InformacionBancariaViewModel> ObtenerInformacionBancariaConFolioInversion(string token, int folioInversion)

@@ -11,6 +11,7 @@ namespace Frontend_ProInvest.Models
         public InversionistaViewModel Inversionista { get; set; }
         public InformacionBancariaViewModel InformacionBancaria { get; set; }
         public InformacionContrato InformacionContrato { get; set; }
-        /* Agregar un objeto de Documentos expedientes */
+
+        public List<DocumentosExpediente> Documentos { get; set; }
     }
 }
