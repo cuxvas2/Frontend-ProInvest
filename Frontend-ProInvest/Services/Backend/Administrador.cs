@@ -276,17 +276,15 @@ namespace Frontend_ProInvest.Services.Backend
         {
             bool eliminacionExitosa = false;
 
-            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Delete, $"{_configuration["UrlWebAPIAdministrador"]}/admin/tiposInversion/{id}")
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Delete, $"{_configuration["UrlWebAPIAdministrador"]}/tiposInversion/{id}")
             {
                 Headers = { { "token", accessToken } }
             };
-
             var httpClient = _httpClientFactory.CreateClient();
 
             try
             {
                 var response = await httpClient.SendAsync(httpRequestMessage);
-
                 if (response.IsSuccessStatusCode)
                 {
                     eliminacionExitosa = true;
@@ -444,6 +442,152 @@ namespace Frontend_ProInvest.Services.Backend
             }
             IEnumerable<DocumentosExpedienteViewModel> documentosObtenidos = documentos;
             return documentosObtenidos;
+        }
+        public async Task<HttpStatusCode> RegistrarOrigenInversion(string origenInversion, string token)
+        {
+            var requestData = new
+            {
+                nombre = origenInversion
+            };
+            StringContent jsonContent = new(JsonSerializer.Serialize(requestData), Encoding.UTF8, "application/json");
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, $"{_configuration["UrlWebAPIAdministrador"]}/origenesInversion")
+            {
+                Content = jsonContent,
+                Headers =  { { "token", token} }
+            };
+
+            var httpClient = _httpClientFactory.CreateClient();
+
+            try
+            {
+                var response = await httpClient.SendAsync(httpRequestMessage);
+                return response.StatusCode;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw new Exception("No se pudieron ingresar los origenes de inversion");
+                return HttpStatusCode.InternalServerError;
+            }
+        }
+        public async Task<HttpStatusCode> EditarOrigenInversion(OrigenInversionViewModel origenEditado, string token)
+        {
+            var requestData = new
+            {
+                nombre = origenEditado.NombreOrigen
+            };
+            StringContent jsonContent = new(JsonSerializer.Serialize(requestData), Encoding.UTF8, "application/json");
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Put, $"{_configuration["UrlWebAPIAdministrador"]}/origenesInversion/{origenEditado.IdOrigen}")
+            {
+                Content = jsonContent,
+                Headers =  { { "token", token} }
+            };
+
+            var httpClient = _httpClientFactory.CreateClient();
+
+            try
+            {
+                var response = await httpClient.SendAsync(httpRequestMessage);
+                return response.StatusCode;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw new Exception("No se pudo editar el origen de inversion");
+                return HttpStatusCode.InternalServerError;
+            }
+        }
+        public async Task<HttpStatusCode> EliminarOrigenInversion(int idOrigenInversion, string token)
+        {
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Delete, $"{_configuration["UrlWebAPIAdministrador"]}/origenesInversion/{idOrigenInversion}")
+            {
+                Headers =  { { "token", token} }
+            };
+            var httpClient = _httpClientFactory.CreateClient();
+            try
+            {
+                var response = await httpClient.SendAsync(httpRequestMessage);
+                return response.StatusCode;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw new Exception("No se pudo eliminar el origen de inversion");
+                return HttpStatusCode.InternalServerError;
+            }
+        }
+        public async Task<HttpStatusCode> RegistrarDocumento(string documentoExpediente, string token)
+        {
+            var requestData = new
+            {
+                nombre = documentoExpediente
+            };
+            StringContent jsonContent = new(JsonSerializer.Serialize(requestData), Encoding.UTF8, "application/json");
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, $"{_configuration["UrlWebAPIAdministrador"]}/documentosExpediente")
+            {
+                Content = jsonContent,
+                Headers =  { { "token", token} }
+            };
+
+            var httpClient = _httpClientFactory.CreateClient();
+
+            try
+            {
+                var response = await httpClient.SendAsync(httpRequestMessage);
+                return response.StatusCode;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw new Exception("No se pudieron ingresar los documentos para expediente");
+                return HttpStatusCode.InternalServerError;
+            }
+        }
+        public async Task<HttpStatusCode> EditarDocumento(DocumentosExpedienteViewModel documentoExpediente, string token)
+        {
+            var requestData = new
+            {
+                nombre = documentoExpediente.NombreDocumento
+            };
+            StringContent jsonContent = new(JsonSerializer.Serialize(requestData), Encoding.UTF8, "application/json");
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Put, $"{_configuration["UrlWebAPIAdministrador"]}/documentosExpediente/{documentoExpediente.IdDocumento}")
+            {
+                Content = jsonContent,
+                Headers =  { { "token", token} }
+            };
+
+            var httpClient = _httpClientFactory.CreateClient();
+
+            try
+            {
+                var response = await httpClient.SendAsync(httpRequestMessage);
+                return response.StatusCode;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw new Exception("No se pudo editar el documento para expediente");
+                return HttpStatusCode.InternalServerError;
+            }
+        }
+        public async Task<HttpStatusCode> EliminarDocumento(int idDocumento, string token)
+        {
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Delete, $"{_configuration["UrlWebAPIAdministrador"]}/documentosExpediente/{idDocumento}")
+            {
+                Headers =  { { "token", token} }
+            };
+            var httpClient = _httpClientFactory.CreateClient();
+            try
+            {
+                var response = await httpClient.SendAsync(httpRequestMessage);
+                return response.StatusCode;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw new Exception("No se pudo eliminar el documento para expediente");
+                return HttpStatusCode.InternalServerError;
+            }
         }
     }
 }

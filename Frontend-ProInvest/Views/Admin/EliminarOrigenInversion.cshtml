@@ -1,0 +1,12 @@
+﻿@model Frontend_ProInvest.Models.OrigenInversionViewModel
+@{
+    Layout = null;
+}
+<form asp-action="EliminarOrigenInversionPost" method="post" asp-controller="admin" asp-route-id="@Model.IdOrigen">
+    <div class="form-group">
+        <label for="Nombre">¿Estas seguro de querer eliminar el origen de inversion @Model.NombreOrigen?</label>
+    </div>
+    <div class="container-fluid text-end mt-4">
+        <button type="submit" class="btn btn-primary">Eliminar</button>
+    </div>
+</form>

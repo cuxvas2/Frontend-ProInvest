@@ -45,6 +45,14 @@ app.MapControllerRoute(
     pattern: "admin/bancos",
     defaults: new { controller = "Admin", action = "AdministrarBancos" });
 app.MapControllerRoute(
+    name: "AdministrarOrigenesInversion",
+    pattern: "admin/origenesInversion",
+    defaults: new { controller = "Admin", action = "GestionarorigenesInversion" });
+app.MapControllerRoute(
+    name: "AdministrarListaDocumentos",
+    pattern: "admin/listaDocumentos",
+    defaults: new { controller = "Admin", action = "GestionarListaDocumentos" });
+app.MapControllerRoute(
     name: "Menu",
     pattern: "admin/menu",
     defaults: new { controller = "Menu", action = "Index" });

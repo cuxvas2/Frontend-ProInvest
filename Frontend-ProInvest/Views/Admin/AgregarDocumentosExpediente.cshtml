@@ -1,0 +1,15 @@
+﻿@model Frontend_ProInvest.Models.DocumentosExpedienteViewModel
+@{
+    Layout = null;
+}
+<form id="formDocumentoExpediente" asp-action="AgregarDocumentosExpedientePost" asp-controller="admin" method="post">
+    <div class="form-group">
+        <label asp-for="NombreDocumento"></label>
+        <input type="text" class="form-control" id="Nombre" asp-for="NombreDocumento" required>
+        <span asp-validation-for="NombreDocumento" class="text-danger"></span>
+    </div>
+    <div class="container-fluid text-end mt-4">
+        <button type="submit" class="btn btn-primary">Agregar</button>
+    </div>
+
+</form>
