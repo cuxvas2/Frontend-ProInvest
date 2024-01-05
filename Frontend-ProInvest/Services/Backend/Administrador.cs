@@ -373,7 +373,23 @@ namespace Frontend_ProInvest.Services.Backend
                 }
                 solicitud.InformacionBancaria = await ObtenerInformacionBancariaConFolioInversion(token, contrato.FolioInversion);
                 solicitud.Documentos = await ObtenerNombresDocumentosExpediente(token);
-                //Teminar de obtener los origenes
+                if(solicitud.Documentos != null)
+                {
+                    foreach(DocumentosExpediente doc in solicitud.Documentos)
+                    {
+                        try
+                        {
+                            doc.URLDoc = await ObtenerURLDeDocuemnto(token, doc.IdDocumento, contrato.IdInversionista);
+
+                        }
+                        catch(Exception ex)
+                        {
+
+                        }
+                    }
+                    //Teminar de obtener los origenes
+
+                }
             }
             catch (Exception ex)
             {
@@ -381,6 +397,34 @@ namespace Frontend_ProInvest.Services.Backend
             }
 
             return solicitud;
+        }
+
+        private async Task<URLDocumento> ObtenerURLDeDocuemnto (string token, int idDocumento, int idInversionista)
+        {
+            URLDocumento documento = new();
+
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, $"{_configuration["UrlWebAPIAdministrador"]}/expedientesInversionistas/{idDocumento}/{idInversionista}")
+            {
+                Headers = { { "token", token } }
+            };
+
+            var httpClient = _httpClientFactory.CreateClient();
+
+            try
+            {
+                var response = await httpClient.SendAsync(httpRequestMessage);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    documento = await response.Content.ReadFromJsonAsync<URLDocumento>();
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return documento;
         }
 
         private async Task<List<DocumentosExpediente>> ObtenerNombresDocumentosExpediente (string token)
@@ -415,7 +459,7 @@ namespace Frontend_ProInvest.Services.Backend
         {
             InformacionBancariaViewModel solicitud = new();
 
-            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, $"{_configuration["UrlWebAPIAdministrador"]}/informacionBancaria{folioInversion}")
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, $"{_configuration["UrlWebAPIAdministrador"]}/informacionBancaria/{folioInversion}")
             {
                 Headers = { { "token", token } }
             };

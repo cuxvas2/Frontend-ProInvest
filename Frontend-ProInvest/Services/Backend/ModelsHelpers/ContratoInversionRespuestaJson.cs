@@ -26,5 +26,20 @@ namespace Frontend_ProInvest.Services.Backend.ModelsHelpers
     {
         public int IdDocumento { get; set; }
         public string NombreDocumento { get; set; }
+        public URLDocumento URLDoc { get; set; }
+    }
+
+    public class URLDocumento
+    {
+        public URLDocumento()
+        {
+            EnlaceBucket = "";
+            NombreArchivo = "Sin archivo";
+
+        }
+        public int IdInversionista { get; set; }
+        public string EnlaceBucket { get; set; }
+        public int IdDocumento { get; set; }
+        public string NombreArchivo { get; set; }
     }
 }
