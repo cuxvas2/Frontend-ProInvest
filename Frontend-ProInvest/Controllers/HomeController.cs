@@ -21,13 +21,20 @@ namespace Frontend_ProInvest.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var tiposInversion = await _usuarios.ObtenerTiposInversionAsync();
-            if (tiposInversion?.Count() > 0)
+            try
             {
-                SelectList selectList = new(tiposInversion, "Rendimiento", "Nombre");
-                ViewBag.TiposInversionList = selectList;
+                var tiposInversion = await _usuarios.ObtenerTiposInversionAsync();
+                if (tiposInversion?.Count() > 0)
+                {
+                    SelectList selectList = new(tiposInversion, "Rendimiento", "Nombre");
+                    ViewBag.TiposInversionList = selectList;
+                }
+                else
+                {
+                    throw new Exception();
+                }
             }
-            else
+            catch (Exception)
             {
                 ViewBag.Error = "No se pudieron recuperar los tipos de inversión";
             }
