@@ -149,55 +149,6 @@ namespace Frontend_ProInvest.Controllers
             }
             return View("VerificacionDatosContacto");
         }
-       /* [HttpPost]
-        public async Task<IActionResult> VerificacionDatosContacto(string codigo, string BtnPrevious, string BtnNext)
-        {
-            if (BtnNext != null)
-            {
-                try
-                {
-                    //Comparar con el código que se envió
-                    //verificar SMS añadirVerificacionSMS
-                    //if (verificacionCorrecta)
-                    //{
-                    //ViewBag.ExitoVerificacionSms = "Se ha verificado correctamente el número de celular."
-                    var direccionIp = ObtenerDireccionIp();
-                    var solicitudExistente = await _usuarios.ObtenerContratoInversionPorIpAsync(direccionIp);
-                        Token = solicitudExistente.Token;
-                        if (solicitudExistente?.InformacionContrato != null)
-                        {
-                            if (solicitudExistente.InformacionContrato.CorreoVerificacion == true)
-                            {
-                                ViewBag.CorreoVerificacion = true;
-                                var estadoCambiado = await _usuarios.EditarEstadoUltimaActualizacionContratoInversionAsync(IdInversionista, "FINANCIERO", DateTime.UtcNow, Token);
-                                if (estadoCambiado)
-                                {
-                                    return RedirectToAction("InformacionBancaria");
-                                }
-                                else
-                                {
-                                    ViewBag.Error = "No se pudo guardar el proceso de tu solicitud. Intente de nuevo más tarde";
-                                }
-                            }
-                            else
-                            {
-                                ViewBag.Error = "Debes verificar tu correo electrónico para continuar";
-                            }
-                        }
-                    //}
-                    //else
-                    //{
-                    //  ViewBag.Error = "Ocurrió un error al verificar tu cuenta, por favor intenta de nuevo.";
-                    //}
-                }
-                catch (Exception)
-                {
-                    ViewBag.Error = "Ocurrió un error al verificar tu cuenta, por favor intenta de nuevo.";
-                }
-            }
-            return View();
-        }
-       */
         [HttpPost]
         public async Task<IActionResult> CorreoVerificado(string BtnContinuar)
         {
