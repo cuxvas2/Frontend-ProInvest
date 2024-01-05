@@ -322,5 +322,30 @@ namespace Frontend_ProInvest.Services.Backend
             }
             return origenesInversion;
         }
+        public async Task<IEnumerable<DocumentosExpedienteViewModel>> ObtenerDocumentosExpediente(string token)
+        {
+            List<DocumentosExpedienteViewModel> documentos = new();
+            
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, $"{_configuration["UrlWebAPIAdministrador"]}/documentosExpediente")
+            {
+                Headers =  { { "token", token} }
+            };
+            var httpClient = _httpClientFactory.CreateClient();
+            try
+            {
+                var response = await httpClient.SendAsync(httpRequestMessage);
+                if (response.IsSuccessStatusCode)
+                {
+                    documentos = await response.Content.ReadFromJsonAsync<List<DocumentosExpedienteViewModel>>();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw new Exception("No se pudieron recuperar los documentos");
+            }
+            IEnumerable<DocumentosExpedienteViewModel> documentosObtenidos = documentos;
+            return documentosObtenidos;
+        }
     }
 }

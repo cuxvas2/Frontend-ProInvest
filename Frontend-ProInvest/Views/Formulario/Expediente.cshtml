@@ -1,0 +1,61 @@
+﻿@model IEnumerable<Frontend_ProInvest.Models.DocumentosExpedienteViewModel>
+
+@{
+    ViewData["Title"] = "Expediente";
+    int i = 0;
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/Formulario.css" asp-append-version="true" />
+    <script defer src="~/js/expediente.js"></script>
+</head>
+<div class="row justify-content-md-center">
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @ViewBag.Error
+        </div>
+    }
+    <div class="col-md-4">
+        <h2 class="text-lg-center">Una inversión segura</h2>
+        <h4 class="text-lg-center">Expediente</h4>
+        <h6 class="text-md-center">Inicia tu vida como inversionista con nosotros</h6>
+        <p class="text-sm-center">Los elementos marcados con un asterísco (*) son obligatorios y deben pesar menos de 5MB</p>
+        <form asp-action="Expediente" enctype="multipart/form-data">
+            @foreach (var documento in Model)
+            {
+                <div class="row align-items-center row-cols-1 row-cols-md-1 g-4 text-center">
+                    <div class="col">
+                        <div class="card card-expediente">
+                            <div class="card-body">
+                                <h5 class="card-title">@documento.NombreDocumento *</h5>
+                                <p class="card-text" id="card-text-@i"></p>
+                            </div>
+                            <input type="file" name="archivos" class="form-control" id="file-input-@i"
+                                onchange="updateCardText(@i)" accept=".pdf">
+                            <input type="hidden" name="nombresArchivos[@i]" id="file-name-@i">
+                            <input type="hidden" name="documentoId[@i]" value="@documento.IdDocumento">
+                        </div>
+                    </div>
+                </div>
+                i++;
+            }
+            <div class="text-center mt-3">
+                <input type="submit" name="BtnNext" value="Siguiente" class="btn btn-primary" />
+                <input type="submit" name="BtnPrevious" value="Anterior" class="btn btn-primary"
+                    style="display:none;" />
+            </div>
+        </form>
+    </div>
+    <div class="col-md-4 col-form-img">
+        <img src="/images/expediente.jpg" alt="Documentos para expediente" class="img-fluid form-img">
+    </div>
+    <div id="loadingModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <h4>Subiendo archivos...</h4>
+        <div class="progress">
+            <div class="indeterminate"></div>
+        </div>
+    </div>
+</div>
+</div>

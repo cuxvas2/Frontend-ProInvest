@@ -19,5 +19,6 @@ namespace Frontend_ProInvest.Services.Backend
         public Task<ContratoInversionModel> EditarInversionContratoInversion(InformacionBancariaViewModel datosAIngresar, int idInversionista, string token);
         public Task<ContratoInversionModel> AgregarContratoCompletoContratoInversionAsync(string base64Url, int idInversionista, string token);
         public Task<IEnumerable<TipoInversionViewModel>> ObtenerTiposInversionAsync();
+        public Task<bool> SubirContratoInversion(ExpedienteInversionistaViewModel expedienteInversionista, string token);
     }
 }

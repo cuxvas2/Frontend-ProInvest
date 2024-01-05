@@ -16,10 +16,12 @@ namespace Frontend_ProInvest.Controllers
     {
         private readonly IUsuarios _usuarios;
         private readonly IAdministrador _administrador;
-        public FormularioController(IUsuarios usuarios, IAdministrador administrador)
+        private readonly IAmazonS3 _amazons3;
+        public FormularioController(IUsuarios usuarios, IAdministrador administrador, IAmazonS3 amazons3)
         {
             _usuarios = usuarios;
             _administrador = administrador;
+            _amazons3 = amazons3;
         }
         public IActionResult Index()
         {
@@ -31,7 +33,7 @@ namespace Frontend_ProInvest.Controllers
             {
                 var direccionIp = ObtenerDireccionIp();
                 var solicitudExistente = await _usuarios.ObtenerContratoInversionPorIpAsync(direccionIp);
-                if(solicitudExistente?.InformacionContrato != null)
+                if (solicitudExistente?.InformacionContrato != null)
                 {
                     string estado = solicitudExistente.InformacionContrato.Estado;
                     switch (estado)
@@ -43,8 +45,7 @@ namespace Frontend_ProInvest.Controllers
                         case "FINANCIERO":
                             return RedirectToAction("InformacionBancaria");
                         case "EXPEDIENTE":
-                            break;
-                        case "FINALIZADO":
+                            return RedirectToAction("Expediente");
                             break;
                     }
                 }
@@ -58,7 +59,7 @@ namespace Frontend_ProInvest.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> DatosPersonalesAsync(InversionistaViewModel datosPersonales, 
+        public async Task<IActionResult> DatosPersonalesAsync(InversionistaViewModel datosPersonales,
             string BtnPrevious, string BtnNext)
         {
             var direccionIp = ObtenerDireccionIp();
@@ -101,7 +102,7 @@ namespace Frontend_ProInvest.Controllers
         {
             try
             {
-                var direccionIp = ObtenerDireccionIp()  ;
+                var direccionIp = ObtenerDireccionIp();
                 var solicitudExistente = await _usuarios.ObtenerContratoInversionPorIpAsync(direccionIp);
                 if (solicitudExistente?.InformacionContrato != null)
                 {
@@ -113,8 +114,7 @@ namespace Frontend_ProInvest.Controllers
                         case "FINANCIERO":
                             return RedirectToAction("InformacionBancaria");
                         case "EXPEDIENTE":
-                            break;
-                        case "FINALIZADO":
+                            return RedirectToAction("Expediente");
                             break;
                     }
                     var cookieOptions = new CookieOptions
@@ -127,7 +127,7 @@ namespace Frontend_ProInvest.Controllers
                     Response.Cookies.Append("Token", solicitudExistente.Token, cookieOptions);
                     Response.Cookies.Append("IdInversionista", solicitudExistente.InformacionContrato.IdInversionista.ToString(), cookieOptions);
                     Response.Cookies.Append("FolioContrato", solicitudExistente.InformacionContrato.FolioInversion.ToString(), cookieOptions);
-                    if (solicitudExistente.InformacionContrato.CorreoVerificacion == true) 
+                    if (solicitudExistente.InformacionContrato.CorreoVerificacion == true)
                     {
                         ViewBag.CorreoVerificacion = true;
                         var estadoActualizado = await _usuarios.EditarEstadoUltimaActualizacionContratoInversionAsync((int)solicitudExistente.InformacionContrato.IdInversionista, "DOMICILIO", DateTime.UtcNow, solicitudExistente.Token);
@@ -149,59 +149,59 @@ namespace Frontend_ProInvest.Controllers
             }
             return View("VerificacionDatosContacto");
         }
-       /* [HttpPost]
-        public async Task<IActionResult> VerificacionDatosContacto(string codigo, string BtnPrevious, string BtnNext)
-        {
-            if (BtnNext != null)
-            {
-                try
-                {
-                    //Comparar con el código que se envió
-                    //verificar SMS añadirVerificacionSMS
-                    //if (verificacionCorrecta)
-                    //{
-                    //ViewBag.ExitoVerificacionSms = "Se ha verificado correctamente el número de celular."
-                    var direccionIp = ObtenerDireccionIp();
-                    var solicitudExistente = await _usuarios.ObtenerContratoInversionPorIpAsync(direccionIp);
-                        Token = solicitudExistente.Token;
-                        if (solicitudExistente?.InformacionContrato != null)
-                        {
-                            if (solicitudExistente.InformacionContrato.CorreoVerificacion == true)
-                            {
-                                ViewBag.CorreoVerificacion = true;
-                                var estadoCambiado = await _usuarios.EditarEstadoUltimaActualizacionContratoInversionAsync(IdInversionista, "FINANCIERO", DateTime.UtcNow, Token);
-                                if (estadoCambiado)
-                                {
-                                    return RedirectToAction("InformacionBancaria");
-                                }
-                                else
-                                {
-                                    ViewBag.Error = "No se pudo guardar el proceso de tu solicitud. Intente de nuevo más tarde";
-                                }
-                            }
-                            else
-                            {
-                                ViewBag.Error = "Debes verificar tu correo electrónico para continuar";
-                            }
-                        }
-                    //}
-                    //else
-                    //{
-                    //  ViewBag.Error = "Ocurrió un error al verificar tu cuenta, por favor intenta de nuevo.";
-                    //}
-                }
-                catch (Exception)
-                {
-                    ViewBag.Error = "Ocurrió un error al verificar tu cuenta, por favor intenta de nuevo.";
-                }
-            }
-            return View();
-        }
-       */
+        /* [HttpPost]
+         public async Task<IActionResult> VerificacionDatosContacto(string codigo, string BtnPrevious, string BtnNext)
+         {
+             if (BtnNext != null)
+             {
+                 try
+                 {
+                     //Comparar con el código que se envió
+                     //verificar SMS añadirVerificacionSMS
+                     //if (verificacionCorrecta)
+                     //{
+                     //ViewBag.ExitoVerificacionSms = "Se ha verificado correctamente el número de celular."
+                     var direccionIp = ObtenerDireccionIp();
+                     var solicitudExistente = await _usuarios.ObtenerContratoInversionPorIpAsync(direccionIp);
+                         Token = solicitudExistente.Token;
+                         if (solicitudExistente?.InformacionContrato != null)
+                         {
+                             if (solicitudExistente.InformacionContrato.CorreoVerificacion == true)
+                             {
+                                 ViewBag.CorreoVerificacion = true;
+                                 var estadoCambiado = await _usuarios.EditarEstadoUltimaActualizacionContratoInversionAsync(IdInversionista, "FINANCIERO", DateTime.UtcNow, Token);
+                                 if (estadoCambiado)
+                                 {
+                                     return RedirectToAction("InformacionBancaria");
+                                 }
+                                 else
+                                 {
+                                     ViewBag.Error = "No se pudo guardar el proceso de tu solicitud. Intente de nuevo más tarde";
+                                 }
+                             }
+                             else
+                             {
+                                 ViewBag.Error = "Debes verificar tu correo electrónico para continuar";
+                             }
+                         }
+                     //}
+                     //else
+                     //{
+                     //  ViewBag.Error = "Ocurrió un error al verificar tu cuenta, por favor intenta de nuevo.";
+                     //}
+                 }
+                 catch (Exception)
+                 {
+                     ViewBag.Error = "Ocurrió un error al verificar tu cuenta, por favor intenta de nuevo.";
+                 }
+             }
+             return View();
+         }
+        */
         [HttpPost]
         public async Task<IActionResult> CorreoVerificado(string BtnContinuar)
         {
-            if(BtnContinuar != null)
+            if (BtnContinuar != null)
             {
                 try
                 {
@@ -209,7 +209,7 @@ namespace Frontend_ProInvest.Controllers
                     var solicitudExistente = await _usuarios.ObtenerContratoInversionPorIpAsync(direccionIp);
                     if (solicitudExistente?.InformacionContrato != null)
                     {
-                        if(solicitudExistente.InformacionContrato.CorreoVerificacion == true)
+                        if (solicitudExistente.InformacionContrato.CorreoVerificacion == true)
                         {
                             var estadoActualizado = await _usuarios.EditarEstadoUltimaActualizacionContratoInversionAsync((int)solicitudExistente.InformacionContrato.IdInversionista, "DOMICILIO", DateTime.UtcNow, solicitudExistente.Token);
                             var cookieOptions = new CookieOptions
@@ -240,7 +240,7 @@ namespace Frontend_ProInvest.Controllers
         {
             if (BtnSendEmail != null)
             {
-                int idInversionista = Int32.Parse(Request.Cookies["IdInversionista"]);   
+                int idInversionista = Int32.Parse(Request.Cookies["IdInversionista"]);
                 string token = Request.Cookies["Token"];
                 int folioContrato = Int32.Parse(Request.Cookies["FolioContrato"]);
                 try
@@ -255,7 +255,7 @@ namespace Frontend_ProInvest.Controllers
                         throw new Exception("Ocurrió un error al enviar el correo electrónico. Intente nuevamente.");
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     ViewBag.Error = ex.Message;
                 }
@@ -287,8 +287,7 @@ namespace Frontend_ProInvest.Controllers
                         case "FINANCIERO":
                             return RedirectToAction("InformacionBancaria");
                         case "EXPEDIENTE":
-                            break;
-                        case "FINALIZADO":
+                            return RedirectToAction("Expediente");
                             break;
                     }
                 }
@@ -305,7 +304,7 @@ namespace Frontend_ProInvest.Controllers
         [HttpPost]
         public async Task<ActionResult> Direccion(InversionistaViewModel direccion, string BtnPrevious, string BtnNext)
         {
-            if(BtnNext!= null)
+            if (BtnNext != null)
             {
                 try
                 {
@@ -324,12 +323,122 @@ namespace Frontend_ProInvest.Controllers
                         ViewBag.Error = "No se pudo guardar el proceso de tu solicitud. Intente de nuevo más tarde";
                     }
                 }
-                catch(Exception ex) 
+                catch (Exception ex)
                 {
                     ViewBag.Error = ex.Message;
                 }
             }
             return View();
+        }
+        public async Task<IActionResult> Expediente()
+        {
+            try
+            {
+                var direccionIp = ObtenerDireccionIp();
+                var solicitudExistente = await _usuarios.ObtenerContratoInversionPorIpAsync(direccionIp);
+                if (solicitudExistente?.InformacionContrato != null)
+                {
+                    var cookieOptions = new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                        SameSite = SameSiteMode.None,
+                        Path = "/Formulario",
+                    };
+                    Response.Cookies.Append("Token", solicitudExistente.Token, cookieOptions);
+                    Response.Cookies.Append("IdInversionista", solicitudExistente.InformacionContrato.IdInversionista.ToString(), cookieOptions);
+                    string estado = solicitudExistente.InformacionContrato.Estado;
+                    switch (estado)
+                    {
+                        case "VERIFICACION":
+                            return RedirectToAction("VerificacionDatosContacto");
+                        case "DOMICILIO":
+                            return RedirectToAction("Direccion");
+                        case "FINANCIERO":
+                            return RedirectToAction("InformacionBancaria");
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                ViewBag.Error = "No se pudo recuperar el proceso de su solicitud. Intente de nuevo más tarde";
+                return RedirectToAction("DatosPersonales");
+            }
+            string token = Request.Cookies["Token"];
+            var listaDocumentos = await _administrador.ObtenerDocumentosExpediente(token);
+            return View(listaDocumentos);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Expediente(List<IFormFile> archivos, List<string> nombresArchivos, List<int> documentoId)
+        {
+            bool todosSubidos = true;
+            int idInversionista = Int32.Parse(Request.Cookies["IdInversionista"]);
+            string token = Request.Cookies["Token"];
+            if (archivos.Count != nombresArchivos.Count || archivos.Count != documentoId.Count)
+            {
+                ViewBag.Error = "Debe subir todos los archivos";
+                var listaDocumentosObtenidos = await _administrador.ObtenerDocumentosExpediente(token);
+                return View(listaDocumentosObtenidos);
+            }
+            if (archivos.Any(f => Path.GetExtension(f.FileName).ToLower() != ".pdf"))
+            {
+                ViewBag.Error = "Todos los archivos tienen que ser PDF";
+                var listaDocumentosObtenidos = await _administrador.ObtenerDocumentosExpediente(token);
+                return View(listaDocumentosObtenidos);
+            }
+            if (archivos.Any(f => f.Length > 5 * 1024 * 1024))
+            {
+                ViewBag.Error = "Todos los archivos deben ser menores de 5MB";
+                var listaDocumentosObtenidos = await _administrador.ObtenerDocumentosExpediente(token);
+                return View(listaDocumentosObtenidos);
+            }
+            for (int i = 0; i < archivos.Count; i++)
+            {
+                var archivo = archivos[i];
+                var nombreArchivo = nombresArchivos[i];
+                var idDocumento = documentoId[i];
+                var subido = await _amazons3.SubirArchivo(nombreArchivo, archivo);
+                if (subido)
+                {
+                    var url = _amazons3.ObtenerUrlArchivo(nombreArchivo);
+                    var expediente = new ExpedienteInversionistaViewModel
+                    {
+                        IdInversionista = idInversionista,
+                        EnlaceBucket = url,
+                        IdDocumento = idDocumento,
+                        NombreDocumento = nombreArchivo
+                    };
+                    var expedienteSubido = await _usuarios.SubirContratoInversion(expediente, token);
+                    if (!expedienteSubido)
+                    {
+                        ViewBag.Error = "Ocurrió un error al guardar los archivos en la base de datos";
+                        todosSubidos = false;
+                        continue;
+                    }
+
+                }
+                else
+                {
+                    ViewBag.Error = "Ocurrió un error al subir los archivos";
+                    todosSubidos = false;
+                    continue;
+                }
+            }
+            if (todosSubidos)
+            {
+                var estadoCambiado = await _usuarios.EditarEstadoUltimaActualizacionContratoInversionAsync(idInversionista, "FINALIZADO", DateTime.UtcNow, token);
+                if (!estadoCambiado)
+                {
+                    ViewBag.Error = "No se pudo guardar el proceso de tu solicitud. Intente de nuevo más tarde";
+                }
+                else
+                {
+                    ViewBag.Error = "Subido correctamente";
+                }
+            }
+            var listaDocumentos = await _administrador.ObtenerDocumentosExpediente(token);
+            return View(listaDocumentos);
+
         }
         public async Task<ActionResult> InformacionBancaria()
         {
@@ -358,15 +467,14 @@ namespace Frontend_ProInvest.Controllers
                         case "DOMICILIO":
                             return RedirectToAction("Direccion");
                         case "EXPEDIENTE":
-                            break;
-                        case "FINALIZADO":
+                            return RedirectToAction("Expediente");
                             break;
                     }
                 }
                 var token = Request.Cookies["Token"];
                 Console.WriteLine("\nToken recuperado de cookie contrato: " + token);
                 var origenesToken = await _administrador.ObtenerOrigenesInversion(token);
-                if(origenesToken.Token != null)
+                if (origenesToken.Token != null)
                 {
                     var cookieOptions = new CookieOptions
                     {
@@ -392,7 +500,7 @@ namespace Frontend_ProInvest.Controllers
                 token = Request.Cookies["Token"];
                 Console.WriteLine("\nToken recuperado cookie origen: " + token);
                 var bancos = await _administrador.ObtenerBancos(token);
-                if(bancos?.Count() > 0)
+                if (bancos?.Count() > 0)
                 {
                     string bancosJson = JsonConvert.SerializeObject(bancos);
                     TempData["Bancos"] = bancosJson;
@@ -405,7 +513,7 @@ namespace Frontend_ProInvest.Controllers
                 }
                 Console.WriteLine("\n\n*********************************************\nToken recuperado cookie banco: " + token);
                 var tiposInversion = await _administrador.GetTiposInversionAsync(token);
-                if(tiposInversion?.Count() > 0)
+                if (tiposInversion?.Count() > 0)
                 {
                     string tiposInversionJson = JsonConvert.SerializeObject(tiposInversion);
                     TempData["TiposInversion"] = tiposInversionJson;
@@ -428,20 +536,20 @@ namespace Frontend_ProInvest.Controllers
         [HttpPost]
         public async Task<ActionResult> InformacionBancaria(InformacionBancariaViewModel modelo, string BtnPrevious, string BtnNext)
         {
-            if(BtnNext!= null)
+            if (BtnNext != null)
             {
-                if(ModelState.IsValid)
+                if (ModelState.IsValid)
                 {
-                    if(modelo.OrigenLicito == false)
+                    if (modelo.OrigenLicito == false)
                     {
                         ModelState.AddModelError("OrigenLicito", "Debe aceptar el Acuerdo de Origen de Fondos para continuar.");
                     }
-                    if(modelo.AceptaContrato == false)
+                    if (modelo.AceptaContrato == false)
                     {
                         ModelState.AddModelError("AceptaContrato", "Debe aceptar el Contrato de inversión para continuar.");
                     }
                 }
-                if (ModelState.IsValid)
+                if (!ModelState.IsValid)
                 {
                     string token = Request.Cookies["Token"];
                     int folioInversion = Int32.Parse(Request.Cookies["FolioInversion"]);
@@ -459,7 +567,7 @@ namespace Frontend_ProInvest.Controllers
                             var estadoCambiado = await _usuarios.EditarEstadoUltimaActualizacionContratoInversionAsync(idInversionista, "EXPEDIENTE", DateTime.UtcNow, token);
                             if (estadoCambiado)
                             {
-                                return RedirectToAction("Direccion");
+                                return RedirectToAction("Expediente");
                             }
                         }
                         throw new Exception();
@@ -512,7 +620,7 @@ namespace Frontend_ProInvest.Controllers
             try
             {
                 var contratoActualizado = await _usuarios.AgregarContratoCompletoContratoInversionAsync(base64url, idInversionista, token);
-                if(contratoActualizado?.Contrato != base64url)
+                if (contratoActualizado?.Contrato != base64url)
                 {
                     throw new Exception();
                 }
@@ -521,7 +629,7 @@ namespace Frontend_ProInvest.Controllers
                     return Json(new { exito = true });
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return Json(new { error = ex.Message });
             }
@@ -531,11 +639,11 @@ namespace Frontend_ProInvest.Controllers
             try
             {
                 var contrato = await _usuarios.ObtenerContratoPorFolioInversion(folioInversion);
-                if(contrato != null && contrato.InformacionContrato != null)
+                if (contrato != null && contrato.InformacionContrato != null)
                 {
                     int idInversionista = (int)contrato.InformacionContrato.IdInversionista;
                     var hashId = GetSHA256(idInversionista.ToString());
-                    if(hashId == hash)
+                    if (hashId == hash)
                     {
                         var verificacionExitosa = await _usuarios.AgregarVerificacionesCorreo(idInversionista);
                     }
@@ -549,7 +657,7 @@ namespace Frontend_ProInvest.Controllers
                     ViewBag.Error = "Ocurrió un error al verificar el correo electrónico. Intente más tarde.";
                 }
             }
-            catch(Exception ex) 
+            catch (Exception ex)
             {
                 ViewBag.Error = ex.Message;
             }
