@@ -3,9 +3,6 @@ using Frontend_ProInvest.Services.Backend;
 using System.Security.Cryptography;
 using Frontend_ProInvest.Services.Backend.ModelsHelpers;
 using Microsoft.AspNetCore.Mvc;
-using Frontend_ProInvest.Models;
-using Frontend_ProInvest.Services.Backend;
-using System.Security.Claims;
 using System.Net;
 using System.Text;
 
@@ -19,7 +16,7 @@ namespace Frontend_ProInvest.Controllers
         {
             _administrador = administrador;
         }
-        private readonly string tokenAdmin = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3VhcmlvIjp7InVzdWFyaW8iOiJQcm9JbnZlc3RMYXRhbSIsImNvbnRyYXNlbmEiOiJCQjlBREI2RThGQkI4NDBBOEQ2OEY3NEJFRjhEQkNCNzYzQTJFRUEzOEZEMjhDRDZCRDU3QzkzRjM5RkQ4REY1In0sImlhdCI6MTcwNDE3NzEzMywiZXhwIjoxNzA0MTg0MzMzfQ.ESGminJyw2DwkTZzAEk98zb-3wUTjKRlaYQHY-GjU3U";
+
         public IActionResult Menu()
         {
             string token = Request.Cookies["tokenAdministrador"];
@@ -181,7 +178,6 @@ namespace Frontend_ProInvest.Controllers
         public async Task<IActionResult> EliminarBanco(int id)
         {
             string token = HttpContext.Request.Cookies["tokenAdministrador"];
-            Console.WriteLine(token);
             var codigoEstado = await _administrador.EliminarBanco(id, token);
             if (codigoEstado == HttpStatusCode.OK)
             {
@@ -221,7 +217,7 @@ namespace Frontend_ProInvest.Controllers
         public async Task<IActionResult> AdministrarTiposDeInversion()
         {
 
-            var token = tokenAdmin;
+            string token = HttpContext.Request.Cookies["tokenAdministrador"];
             var listaTipoInversiones = await _administrador.GetTiposInversionAsync(token);
             return View(listaTipoInversiones);
         }
@@ -232,6 +228,7 @@ namespace Frontend_ProInvest.Controllers
             {
                 return NotFound();
             }
+            Console.WriteLine(folio);
             string token = HttpContext.Request.Cookies["tokenAdministrador"];
             var contrato = await _administrador.ObtenerInformacionContratoPorFolio(token, folio);
             var solicitudInversion = await _administrador.ObtenerSolicitudInversion(token, contrato);
@@ -249,8 +246,7 @@ namespace Frontend_ProInvest.Controllers
         {
             if (ModelState.IsValid)
             {
-                //Se guarda en la bd (se envia a la api para que lo guarde)
-                var token = tokenAdmin;
+                string token = HttpContext.Request.Cookies["tokenAdministrador"];
                 var guardadaCorrectamente = await _administrador.AnadirTiposInversionAsync(token, tipoInversion);
                 if (guardadaCorrectamente)
                 {
@@ -267,7 +263,7 @@ namespace Frontend_ProInvest.Controllers
                 return NotFound();
             }
 
-            var token = tokenAdmin;
+            string token = HttpContext.Request.Cookies["tokenAdministrador"];
             var tipoInversion = await _administrador.GetTipoInversionAsync(token, id);
             if (tipoInversion == null)
             {
@@ -286,7 +282,7 @@ namespace Frontend_ProInvest.Controllers
 
             if (ModelState.IsValid)
             {
-                var token = tokenAdmin;
+                string token = HttpContext.Request.Cookies["tokenAdministrador"];
                 var guardadoExitoso = await _administrador.EditarTipoInversionAsync(token, tipoInversion);
                 if (guardadoExitoso)
                 {
@@ -307,7 +303,7 @@ namespace Frontend_ProInvest.Controllers
                 return NotFound();
             }
 
-            var token = tokenAdmin;
+            string token = HttpContext.Request.Cookies["tokenAdministrador"];
             var tipoInversion = await _administrador.GetTipoInversionAsync(token, id);
             if (tipoInversion == null)
             {
@@ -325,14 +321,220 @@ namespace Frontend_ProInvest.Controllers
                 return NotFound();
             }
 
-            var token = tokenAdmin;
+            string token = HttpContext.Request.Cookies["tokenAdministrador"];
             var eliminadoExitoso = await _administrador.EliminarTipoInversionAsync(token, id);
             if (!eliminadoExitoso)
             {
                 //MOstrar aviso de no exitoso
             }
-            return RedirectToAction(nameof(AdministrarTiposDeInversion));
+            return RedirectToAction(nameof(AdministrarTiposDeInversion), id);
         }
-
+        public async Task<IActionResult> GestionarOrigenesInversion()
+        {
+            string token = Request.Cookies["tokenAdministrador"];
+            if (token == null)
+            {
+                return Redirect("/admin");
+            }
+            else
+            {
+                var listaOrigenesInversionToken = await _administrador.ObtenerOrigenesInversion(token);
+                var listaOrigenesInversion = listaOrigenesInversionToken.OrigenesInversion;
+                IEnumerable<OrigenInversionViewModel> listaOrigenesInversionViewModel = listaOrigenesInversion;
+                if (TempData["Error"] != null)
+                {
+                    ViewBag.Error = TempData["Error"].ToString();
+                }
+                return View(listaOrigenesInversionViewModel);
+            }
+        }
+        [HttpGet]
+        public IActionResult AgregarOrigenInversion()
+        {
+            return View();
+        }
+        [HttpPost, ActionName("AgregarOrigenInversionPost")]
+        public async Task<IActionResult> AgregarOrigenInversion(OrigenInversionViewModel origenAgregar)
+        {
+            string token = HttpContext.Request.Cookies["tokenAdministrador"];
+            var codigoEstado = await _administrador.RegistrarOrigenInversion(origenAgregar.NombreOrigen, token);
+            if (codigoEstado == HttpStatusCode.Created)
+            {
+                return Redirect("/admin/origenesInversion");
+            }
+            if (codigoEstado == HttpStatusCode.BadRequest)
+            {
+                TempData["Error"] = "El origen ya existe.";
+                return RedirectToAction("GestionarOrigenesInversion");
+            }
+            if (codigoEstado == HttpStatusCode.Unauthorized)
+            {
+                return Redirect("/admin");
+            }
+            else
+            {
+                return Redirect("/admin");
+            }
+        }
+        [HttpGet]
+        public IActionResult EditarOrigenInversion(int idOrigenInversion, string nombreOrigen)
+        {
+            OrigenInversionViewModel origenInversion = new OrigenInversionViewModel
+            {
+                IdOrigen = idOrigenInversion,
+                NombreOrigen = nombreOrigen
+            };
+            return View(origenInversion);
+        }
+        [HttpPost, ActionName("EditarOrigenInversionPost")]
+        public async Task<IActionResult> EditarOrigenInversion(int id, OrigenInversionViewModel origenEditar)
+        {
+            origenEditar.IdOrigen = id;
+            string token = HttpContext.Request.Cookies["tokenAdministrador"];
+            var codigoEstado = await _administrador.EditarOrigenInversion(origenEditar, token);
+            if (codigoEstado == HttpStatusCode.OK)
+            {   
+                return Redirect("/admin/origenesInversion");
+            }
+            if (codigoEstado == HttpStatusCode.Unauthorized)
+            {
+                return Redirect("/admin");
+            }
+            else
+            {
+                return Redirect("/admin");
+            }
+        }
+        [HttpGet]
+        public IActionResult EliminarOrigenInversion(int idOrigen, string nombreOrigen)
+        {
+            OrigenInversionViewModel origenInversion = new OrigenInversionViewModel
+            {
+                IdOrigen = idOrigen,
+                NombreOrigen = nombreOrigen
+            };
+            return View(origenInversion);
+        }
+        [HttpPost, ActionName("EliminarOrigenInversionPost")]
+        public async Task<IActionResult> EliminEliminarOrigenInversionarBanco(int id)
+        {
+            string token = HttpContext.Request.Cookies["tokenAdministrador"];
+            var codigoEstado = await _administrador.EliminarOrigenInversion(id, token);
+            if (codigoEstado == HttpStatusCode.OK)
+            {
+                return Redirect("/admin/origenesInversion");
+            }
+            if (codigoEstado == HttpStatusCode.Unauthorized)
+            {
+                return Redirect("/admin");
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+        public async Task<IActionResult> GestionarListaDocumentos()
+        {
+            string token = Request.Cookies["tokenAdministrador"];
+            if (token == null)
+            {
+                return Redirect("/admin");
+            }
+            else
+            {
+                IEnumerable<DocumentosExpedienteViewModel> listaDocumentos = await _administrador.ObtenerDocumentosExpediente(token);
+                if (TempData["Error"] != null)
+                {
+                    ViewBag.Error = TempData["Error"].ToString();
+                }
+                return View(listaDocumentos);
+            }
+        }
+        [HttpGet]
+        public IActionResult AgregarDocumentosExpediente()
+        {
+            return View();
+        }
+        [HttpPost, ActionName("AgregarDocumentosExpedientePost")]
+        public async Task<IActionResult> AgregarDocumentosExpediente(DocumentosExpedienteViewModel documentoAgregar)
+        {
+            string token = HttpContext.Request.Cookies["tokenAdministrador"];
+            var codigoEstado = await _administrador.RegistrarDocumento(documentoAgregar.NombreDocumento, token);
+            if (codigoEstado == HttpStatusCode.Created)
+            {
+                return Redirect("/admin/listaDocumentos");
+            }
+            if (codigoEstado == HttpStatusCode.BadRequest)
+            {
+                TempData["Error"] = "El documento ya existe.";
+                return RedirectToAction("GestionarListaDocumentos");
+            }
+            if (codigoEstado == HttpStatusCode.Unauthorized)
+            {
+                return Redirect("/admin");
+            }
+            else
+            {
+                return Redirect("/admin");
+            }
+        }
+        [HttpGet]
+        public IActionResult EditarDocumentosExpediente(int idDocumento, string nombreDocumento)
+        {
+            DocumentosExpedienteViewModel documento = new DocumentosExpedienteViewModel
+            {
+                IdDocumento = idDocumento,
+                NombreDocumento = nombreDocumento
+            };
+            return View(documento);
+        }
+        [HttpPost, ActionName("EditarDocumentosExpedientePost")]
+        public async Task<IActionResult> EditarDocumentosExpediente(int id, DocumentosExpedienteViewModel documentoEditar)
+        {
+            documentoEditar.IdDocumento = id;
+            string token = HttpContext.Request.Cookies["tokenAdministrador"];
+            var codigoEstado = await _administrador.EditarDocumento(documentoEditar, token);
+            if (codigoEstado == HttpStatusCode.OK)
+            {   
+                return Redirect("/admin/listaDocumentos");
+            }
+            if (codigoEstado == HttpStatusCode.Unauthorized)
+            {
+                return Redirect("/admin");
+            }
+            else
+            {
+                return Redirect("/admin");
+            }
+        }
+        [HttpGet]
+        public IActionResult EliminarDocumentoExpediente(int idDocumento, string nombreDocumento)
+        {
+            DocumentosExpedienteViewModel documento = new DocumentosExpedienteViewModel
+            {
+                IdDocumento = idDocumento,
+                NombreDocumento = nombreDocumento
+            };
+            return View(documento);
+        }
+       
+        [HttpPost, ActionName("EliminarDocumentoExpedientePost")]
+        public async Task<IActionResult> EliminarDocumentoExpediente(int id)
+        {
+            string token = HttpContext.Request.Cookies["tokenAdministrador"];
+            var codigoEstado = await _administrador.EliminarDocumento(id, token);
+            if (codigoEstado == HttpStatusCode.OK)
+            {
+                return Redirect("/admin/listaDocumentos");
+            }
+            if (codigoEstado == HttpStatusCode.Unauthorized)
+            {
+                return Redirect("/admin");
+            }
+            else
+            {
+                return Redirect("/admin");
+            }
+        }
     }
 }

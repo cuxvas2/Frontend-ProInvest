@@ -8,12 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.Core" Version="3.7.301" />
-    <PackageReference Include="AWSSDK.S3" Version="3.7.305.5" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.16" />
+    <None Include="wwwroot\loaderio-f7205a52f3a50a6985c7534cf2734845.txt" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AWSSDK.Core" Version="3.7.301" />
+    <PackageReference Include="AWSSDK.S3" Version="3.7.305.5" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.16" />
   </ItemGroup>
 

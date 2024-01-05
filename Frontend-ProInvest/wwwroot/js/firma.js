@@ -27,13 +27,6 @@ window.obtenerImagen = () => {
     return canvas.toDataURL();
 };
 
-////impresion de contrato con su firma
-//botonEnviar.addEventListener('click', (e) => {
-//    const url = canvas.toDataURL();
-//    const ventana = window.open('ContratoDeInversion');
-//});
-
-
 botonEnviar.addEventListener('click', async function () {
     const urlImagen = canvas.toDataURL();
     try {

@@ -16,9 +16,6 @@ builder.Services.AddScoped<IUsuarios, Usuarios>();
 builder.Services.AddScoped<IAdministrador, Administrador>();
 builder.Services.AddScoped<IAmazonS3, AmazonS3>();
 
-//Soporte para consultar el API
-builder.Services.AddHttpClient();
-builder.Services.AddScoped<IAdministrador, Administrador>();
 
 var app = builder.Build();
 
@@ -47,6 +44,14 @@ app.MapControllerRoute(
     name: "AdministrarBancos",
     pattern: "admin/bancos",
     defaults: new { controller = "Admin", action = "AdministrarBancos" });
+app.MapControllerRoute(
+    name: "AdministrarOrigenesInversion",
+    pattern: "admin/origenesInversion",
+    defaults: new { controller = "Admin", action = "GestionarorigenesInversion" });
+app.MapControllerRoute(
+    name: "AdministrarListaDocumentos",
+    pattern: "admin/listaDocumentos",
+    defaults: new { controller = "Admin", action = "GestionarListaDocumentos" });
 app.MapControllerRoute(
     name: "Menu",
     pattern: "admin/menu",

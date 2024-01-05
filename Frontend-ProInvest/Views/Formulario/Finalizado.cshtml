@@ -1,0 +1,38 @@
+﻿@{
+    ViewData["Title"] = "Finalizado";
+}
+<div class="row justify-content-md-center">
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @ViewBag.Error
+        </div>
+    }
+    <div class="col-md-6 text-center">
+        <img src="/images/Compleado.jpg" alt="Paloma verde realizado" class="img-fluid" style="height: 15%">
+        <h2>Proceso de solicitud de inversión completado</h2>
+        <p class="mt-3">Folio de Inversion:</p>
+        @if(ViewBag.Folio != null)
+        {
+            <label id="folio">@ViewBag.Folio</label>
+        }
+        <h5 class="mt-3">Contrato de Inversion</h5>
+        <button type="button" class="btn btn-primary" id="descargar">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
+                <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+            </svg>
+            Descargar
+        </button>
+        <h6 class="mt-3">Firma</h6>
+        <img src="@ViewBag.Firma" id="firmaImage" />
+
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script defer src="~/js/contrato.js"></script>
+}
