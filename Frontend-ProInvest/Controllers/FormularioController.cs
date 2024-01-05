@@ -567,7 +567,7 @@ namespace Frontend_ProInvest.Controllers
             return View(listaDocumentos);
 
         }
-        
+
         [HttpPost]
         public async Task<JsonResult> HandleCodigoPostalChange(string codigoPostal)
         {
@@ -664,7 +664,8 @@ namespace Frontend_ProInvest.Controllers
         }
         private string ObtenerDireccionIp()
         {
-            return HttpContext.Connection.RemoteIpAddress.ToString();
+            //return HttpContext.Connection.RemoteIpAddress.ToString();
+            return "otro";
         }
     }
 }

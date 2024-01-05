@@ -1,5 +1,5 @@
 ﻿const botonContrato = document.getElementById('descargar')
-const folio = document.getElementById('folio').innerText;
+const descargar = document.getElementById('descargarContrato')
 var imagenFirma = document.getElementById('firmaImage');
 
 // Accede al valor del atributo src
@@ -9,9 +9,17 @@ window.obtenerImagen = () => {
     return urlFirma;
 };
 
+if (botonContrato != null) {
+    botonContrato.addEventListener('click', (e) => {
+        e.preventDefault();
+        const ventana = window.open('ContratoDeInversion');
+    });
+}
 //impresion de contrato con su firma
-botonContrato.addEventListener('click', (e) => {
-    e.preventDefault();
-    const ventana = window.open('ContratoDeInversion');
-});
+else {
+    descargar.addEventListener('click', (e) => {
+        e.preventDefault();
+        const ventana = window.open('/Formulario/ContratoDeInversion');
+    });
+}
 

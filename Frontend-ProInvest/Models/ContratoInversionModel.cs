@@ -1,4 +1,6 @@
-﻿namespace Frontend_ProInvest.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Frontend_ProInvest.Models
 {
     public class ContratoInversionModel
     {
@@ -7,6 +9,9 @@
         public int? IdInversionista { get; set; }
         public int? IdTipo { get; set; }
         public int? IdOrigen { get; set; }
+        [RegularExpression(@"^[0-9]+$", ErrorMessage = "Ingresa tu folio de inversión (sólo números).")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio")]
+        [Display(Name = "Ingresa tu folio de inversión")]
         public int? FolioInversion { get; set; }
         public DateTime? Fecha { get; set; }
         public double? Importe { get; set; }

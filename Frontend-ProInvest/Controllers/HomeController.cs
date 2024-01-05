@@ -44,7 +44,37 @@ namespace Frontend_ProInvest.Controllers
         {
             return View();
         }
-
+        public IActionResult MiInversion()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> MiInversion(ContratoInversionModel model, string Buscar)
+        {
+            if(Buscar != null)
+            {
+                try
+                {
+                    var contrato = await _usuarios.ObtenerContratoPorFolioInversion((int)model.FolioInversion);
+                    if(contrato?.InformacionContrato != null)
+                    {
+                        ViewBag.Folio = contrato.InformacionContrato.FolioInversion;
+                        ViewBag.Importe = contrato.InformacionContrato.Importe;
+                        ViewBag.Fecha = ((DateTime)contrato.InformacionContrato.UltimaActualizacion).ToShortDateString();
+                        ViewBag.Firma = contrato.InformacionContrato.Contrato;
+                    }
+                    else
+                    {
+                        ViewBag.Error = "No existen contratos de inversión con ese folio";
+                    }   
+                }
+                catch (Exception)
+                {
+                    ViewBag.Error = "No se pudieron recuperar los tipos de inversión";
+                }
+            }
+            return View();
+        }
         public IActionResult Privacy()
         {
             List<TipoInversionViewModel> listaViewModel = ObtenerListaViewModel();
