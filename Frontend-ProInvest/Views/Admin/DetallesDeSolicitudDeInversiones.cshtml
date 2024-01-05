@@ -1,0 +1,192 @@
+﻿@model Frontend_ProInvest.Models.SolicitudInversionViewModel
+
+@{
+    ViewData["Title"] = "DetallesDeSolicitudDeInversiones";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Detalles de la Solicitud</h1>
+
+<div>
+    <h4>Solicitud</h4>
+    <hr />
+    <div class="row">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="xalapa-tab" data-bs-toggle="tab"
+                        data-bs-target="#tapInfoPersonal" type="button" role="tab"
+                        aria-controls="tapInfoPersonal" aria-selected="true">
+                    Información personal
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="-tab" data-bs-toggle="tab"
+                        data-bs-target="#tapInfoDomicilio" type="button" role="tab"
+                        aria-controls="tapInfoDomicilio" aria-selected="false">
+                    Información domiciliaria
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="-tab" data-bs-toggle="tab"
+                        data-bs-target="#tapInfoBanco" type="button" role="tab"
+                        aria-controls="tapInfoBanco" aria-selected="false">
+                    Información bancaria
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="-tab" data-bs-toggle="tab"
+                        data-bs-target="#tapInfoDocumentos" type="button" role="tab"
+                        aria-controls="tapInfoDocumentos" aria-selected="false">
+                    Documentos para expediente
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content border border-top-0 p-3" id="tapInfoPersonal">
+            <div class="tab-pane fade show active" id="xalapa-tab-pane" role="tabpanel"
+                 aria-labelledby="home-tab" tabindex="0">
+                <dl class="row">
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Inversionista.Nombre)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Inversionista.Nombre)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Inversionista.ApellidoPaterno)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Inversionista.ApellidoPaterno)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Inversionista.ApellidoMaterno)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Inversionista.ApellidoMaterno)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Inversionista.Rfc)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Inversionista.Rfc)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Inversionista.FechaNacimiento)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Inversionista.FechaNacimiento)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Inversionista.CorreoElectronico)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Inversionista.CorreoElectronico)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Inversionista.TelefonoCelular)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Inversionista.TelefonoCelular)
+                    </dd>
+                </dl>
+                
+            </div>
+            <div class="tab-pane fade" id="tapInfoDomicilio" role="tabpanel"
+                 aria-labelledby="veracruz-tab" tabindex="0">
+                <dl class="row">
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Inversionista.Calle)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Inversionista.Calle)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Inversionista.NumeroExterior)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Inversionista.NumeroExterior)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Inversionista.NumeroInterior)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Inversionista.NumeroInterior)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Inversionista.CodigoPostal)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Inversionista.CodigoPostal)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Inversionista.Colonia)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Inversionista.Colonia)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Inversionista.Estado)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Inversionista.Estado)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Inversionista.Municipio)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Inversionista.Municipio)
+                    </dd>
+                </dl>
+            </div>
+            <div class="tab-pane fade" id="tapInfoBanco" role="tabpanel"
+                 aria-labelledby="veracruz-tab" tabindex="0">
+                <dl class="row">
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.InformacionBancaria.OrigenDeFondos)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.InformacionBancaria.OrigenDeFondos)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.InformacionBancaria.Cuenta)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.InformacionBancaria.Cuenta)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.InformacionBancaria.Banco)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.InformacionBancaria.Banco)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.InformacionBancaria.CantidadAInvertir)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.InformacionBancaria.CantidadAInvertir)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.InformacionBancaria.Anios)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.InformacionBancaria.Anios)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.InformacionBancaria.TipoDeInversion)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.InformacionBancaria.TipoDeInversion)
+                    </dd>
+                </dl>
+            </div>
+            <div class="tab-pane fade" id="tapInfoDocumentos" role="tabpanel"
+                 aria-labelledby="veracruz-tab" tabindex="0">
+                Falta agregar los documetos
+            </div>
+        </div>
+
+    </div>
+</div>
+<div>
+    <a asp-action="SolicitudesInversiones" asp-controller="admin">Regresar</a>
+</div>
