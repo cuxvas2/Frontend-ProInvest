@@ -1,6 +1,9 @@
 ﻿using Frontend_ProInvest.Models;
+using Frontend_ProInvest.Services.Backend;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
+using NuGet.Common;
 using System.Diagnostics;
 
 namespace Frontend_ProInvest.Controllers
@@ -8,17 +11,26 @@ namespace Frontend_ProInvest.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IUsuarios _usuarios;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IUsuarios usuarios)
         {
             _logger = logger;
+            _usuarios = usuarios;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            List<TipoInversionViewModel> listaViewModel = ObtenerListaViewModel();
-            SelectList selectList = new SelectList(listaViewModel, "Rendimiento", "Nombre");
-            ViewBag.TiposInversionList = selectList;
+            var tiposInversion = await _usuarios.ObtenerTiposInversionAsync();
+            if (tiposInversion?.Count() > 0)
+            {
+                SelectList selectList = new(tiposInversion, "Rendimiento", "Nombre");
+                ViewBag.TiposInversionList = selectList;
+            }
+            else
+            {
+                ViewBag.Error = "No se pudieron recuperar los tipos de inversión";
+            }
             return View();
         }
         public IActionResult AcuerdoOrigenDeFondos()
